@@ -1,0 +1,12 @@
+PKG_CFLAGS = -w
+
+OBJECTS = dym/dym.o wrappers.o
+
+
+### Start making here.
+all: $(SHLIB)
+
+$(SHLIB): $(OBJECTS)
+
+clean:
+		@rm -rf *.o *.d *.rc *.so* *.dylib *.dll *.a *.lib

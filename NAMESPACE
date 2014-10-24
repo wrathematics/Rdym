@@ -1,0 +1,6 @@
+useDynLib(Rdym)
+
+
+# All internal functions
+exportPattern("^[[:alpha:]]+")
+
