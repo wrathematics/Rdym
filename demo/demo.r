@@ -9,5 +9,5 @@ find_nearest_word("kitten", c("smitten", "smiling", "kiting", "bitten"))
 find_nearest_word("kitten", c("smitten", "smiling", "kiting", "kitten"))
 
 
-
-levenshtein_dist("write.csv", "de")
+did_you_mean("wiret.csv")
+did_you_mean("utils::wiret.csv")
