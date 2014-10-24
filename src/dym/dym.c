@@ -26,15 +26,6 @@
 #include "dym.h"
 
 
-static inline ldint_t min3(const ldint_t a, const ldint_t b, const ldint_t c)
-{
-  ldint_t min = a;
-  if (min < b) min = b;
-  if (min < c) min = c;
-  
-  return min;
-}
-
 // Based on the explanation here: https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows
 // O(strlen(s) * strlen(t))
 int levenshtein_dist(const char *s, const char *t)
@@ -81,50 +72,6 @@ int levenshtein_dist(const char *s, const char *t)
   
   return ret;
 }
-
-
-// v0 = malloc(vlen * sizeof(ldint_t));
-// v1 = malloc(vlen * sizeof(ldint_t));
-int levenshtein_dist_partial(const int k, const char *s, const char *t, char *v0, char *v1)
-{
-  int i, j;
-  int ret;
-  ldint_t cost;
-  
-  const size_t slen = strlen(s);
-  const size_t tlen = strlen(t);
-  const size_t vlen = tlen + 1;
-  
-  if (strcmp(s, t) == 0) return 0;
-  if (strlen(s) == 0) return strlen(t);
-  if (strlen(t) == 0) return strlen(s);
-  
-  
-  for (i=0; i<vlen; i++)
-    v0[i] = i;
-  
-  for (i=0; i<slen; i++)
-  {
-    v1[0] = i+1;
-    
-    for (j=0; j<tlen; j++)
-    {
-      cost = (s[i] == t[j]) ? 0 : 1;
-      v1[j+1] = MIN3(v1[j] + 1, v0[j+1] + 1, v0[j] + cost);
-    }
-    
-    for (j=0; j<vlen; j++)
-      v0[j] = v1[j];
-    
-    if (v0[tlen] > k)
-      return BADMATCH;
-  }
-  
-  ret = (int) v1[tlen];
-  
-  return ret;
-}
-
 
 
 
