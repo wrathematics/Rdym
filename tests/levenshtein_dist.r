@@ -2,7 +2,7 @@ library(Rdym)
 
 test <- function(word1, word2)
 {
-  tmp <- function(word1, word2) levenshtein_dist(word1, word2) == adist(word1, word2)[1,1]
+  tmp <- function(word1, word2) Rdym:::levenshtein_dist(word1, word2) == adist(word1, word2)[1,1]
   t1 <- tmp(word1, word2)
   t2 <- tmp(word2, word1)
   t3 <- tmp(word1, word1)
