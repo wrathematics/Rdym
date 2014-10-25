@@ -5,44 +5,23 @@ suggestions are given in the presence of likely typos.  This
 uses ancient spellchecker techniques to somewhat replicate
 that functionality for R.
 
-At the moment, I'm still trying to figure out how to hijack `eval`,
-so it's very much "do it yourself" at the moment.  But I'm
-hoping to change that.
-
-
-
-## Example
-
-Ideally, I will eventually find a (simple) way to modify R's `eval`.
-But to get a flavor for the general behavior, you can explicitly
-call `did_you_mean()`:
+Say for example you run
 
 ```r
-did_you_mean("wiret.csv")
-# Did you mean:  write.csv  ?
+shapro.test(x=rnorm(20))
+# Error: object 'shapro.test' not found
 ```
 
-By default, the function will search the namespaces of all loaded
-packages, plus the content of `ls()`.
+With the R-did-you-mean package, you can get a "did you mean?"
+suggestion listed with the error:
 
 ```r
-myfun <- function(x) x+1
-did_you_mean("myfn")
-# Did you mean:  myfun  ?
+library(Rdym)
+
+shapro.test(x=rnorm(20))
+# Error: object 'shapro.test' not found
+# Did you mean:  shapiro.test()  ?
 ```
-
-If the misspelling occurs with a namespace, we only search that namespace.
-For example:
-
-```r
-did_you_mean("base::wiret.csv")
-# Did you mean:  base::parent.env  ?
-did_you_mean("utils::wiret.csv")
-# Did you mean:  utils::write.csv  ?
-```
-
-Notice that `write.csv()` is in the `utils` package, and not
-the `base` package.
 
 
 

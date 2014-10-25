@@ -47,7 +47,13 @@ did_you_mean <- function(name)
   else
     word <- closest$word
   
-  cat(paste0("Did you mean:  ", word, "  ?\n"))
+  type <- typeof(eval(parse(text=paste0("`", word, "`"))))
+  if (type == "closure")
+    word <- paste0(word, "()")
+  
+  cat(paste0("\nDid you mean:  ", word, "  ?\n"))
+#  if (type == "closure")
+    cat(paste0(sub(x=.lastcall, pattern=name, replacement=word), "\n"))
   
   invisible()
 }
