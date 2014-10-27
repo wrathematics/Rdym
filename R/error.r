@@ -19,7 +19,7 @@ stop_dym <- function()
   
   if (matcherr(msg=msg, pattern="could not find function") || matcherr(msg=msg, pattern="is not an exported object from"))
   {
-    fun <- sub(x=msg, pattern="Error: could not find function \"", replacement="")
+    fun <- sub(x=msg, pattern=".*could not find function \"", replacement="")
     fun <- sub(x=fun, pattern="\"", replacement="")
     did_you_mean(fun, lastcall)
   }
@@ -28,6 +28,10 @@ stop_dym <- function()
     obj <- sub(x=msg, pattern="Error: object '", replacement="")
     obj <- sub(x=obj, pattern="' not found", replacement="")
     did_you_mean(obj, lastcall)
+  }
+  else
+  {
+    #TODO
   }
   
   invisible()
