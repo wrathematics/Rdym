@@ -23,6 +23,29 @@ shapro.test(x=rnorm(20))
 # shapiro.test(x=rnorm(20))
 ```
 
+Missingness will propagate from outermost to innermost.  For example:
+
+```r
+librar> library(Rdym)
+
+shapro.test(rnom(20))
+# Error: could not find function "shapro.test"
+# 
+# Did you mean:  shapiro.test  ?
+# shapiro.test(rnom(20))
+
+shapiro.test(rnom(20))
+# Error in stopifnot(is.numeric(x)) : could not find function "rnom"
+# 
+# Did you mean:  rnorm  ?
+# shapiro.test(rnorm(20))
+
+shapiro.test(rnorm(20))
+#  Shapiro-Wilk normality test
+# 
+# data:  rnorm(20)
+# W = 0.9366, p-value = 0.207
+```
 
 
 ## Installation
