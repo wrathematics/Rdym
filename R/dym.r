@@ -24,8 +24,9 @@ find_closest_word <- function(input, words)
 
 
 
-did_you_mean <- function(name)
+did_you_mean <- function(name, lastcall)
 {
+  name <- sub(x=name, pattern="\\n", replacement="")
   with.namespace <- length(grep(x=name, pattern="::")) > 0
   
   if (with.namespace)
@@ -47,13 +48,18 @@ did_you_mean <- function(name)
   else
     word <- closest$word
   
-  type <- typeof(eval(parse(text=paste0("`", word, "`"))))
+  type <- eval(typeof(parse(text=paste0("`", word, "`"))))
   if (type == "closure")
-    word <- paste0(word, "()")
+    printword <- paste0(word, "()")
+  else
+    printword <- word
   
-  cat(paste0("\nDid you mean:  ", word, "  ?\n"))
+  cat(paste0("\nDid you mean:  ", printword, "  ?\n"))
 #  if (type == "closure")
-    cat(paste0(sub(x=.lastcall, pattern=name, replacement=word), "\n"))
+  if (!missing(lastcall))
+  {
+    cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
+  }
   
   invisible()
 }
