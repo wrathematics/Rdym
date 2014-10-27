@@ -12,7 +12,7 @@ find_closest_word <- function(input, words)
       break
     }
     
-    if (dist <= shortest || shortest < 0)
+    if (dist < shortest || shortest < 0)
     {
       closest <- i
       shortest <- dist

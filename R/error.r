@@ -25,8 +25,8 @@ stop_dym <- function()
   }
   else if (matcherr(msg=msg, pattern="not found"))
   {
-    obj <- sub(x=msg, pattern="Error: object '", replacement="")
-    obj <- sub(x=obj, pattern="' not found", replacement="")
+    obj <- sub(x=msg, pattern=".*: object '", replacement="")
+    obj <- sub(x=obj, pattern="' not found\\n", replacement="")
     did_you_mean(obj, lastcall)
   }
   else
