@@ -1,6 +1,6 @@
 PKG_CFLAGS = -w
 
-OBJECTS = dym/dym.o wrappers.o
+OBJECTS = dym.o wrappers.o
 
 
 ### Start making here.
