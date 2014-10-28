@@ -70,7 +70,9 @@ When R detects that a function or object listed in the user's input
 is not found, the package finds the minimum
 [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
 between the "unfound" word and all symbols in the user's global
-environment plus all loaded namespaces.
+environment plus all loaded namespaces.  The word with minimum Levenshtein
+distance (in the event of ties, the first such detected is returned) is
+then suggested as an alternative to the missing symbol.
 
 
 
