@@ -5,7 +5,12 @@ suggestions are given in the presence of likely typos.  This
 uses ancient spellchecker techniques to somewhat replicate
 that functionality for R.
 
-Say for example you run
+
+
+## Example
+
+Usage of the package is completely passive, beyond loading it with
+the usual `library(Rdym)` call.  Say for example you run:
 
 ```r
 shapro.test(x=rnorm(20))
@@ -48,11 +53,24 @@ shapiro.test(rnorm(20))
 ```
 
 
+
 ## Installation
+
+You can install directly from GitHub via the devtools package:
 
 ```
 devtools::install_github("wrathematics/Rdym")
 ```
+
+
+
+## How it works
+
+When R detects that a function or object listed in the user's input
+is not found, the package finds the minimum
+[Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+between the "unfound" word and all symbols in the user's global
+environment plus all loaded namespaces.
 
 
 
@@ -88,3 +106,4 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
+
