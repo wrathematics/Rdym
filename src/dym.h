@@ -17,5 +17,9 @@ typedef uint16_t ldint_t;
 #define BADMATCH -1
 
 
+int levenshtein_dist(const char *s, const char *t);
+int did_you_mean(const char *input, const char **words, const int nwords, char **word);
+
+
 #endif
 

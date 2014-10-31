@@ -27,7 +27,6 @@
 
 
 // Based on the explanation here: https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows
-// O(strlen(s) * strlen(t))
 int levenshtein_dist(const char *s, const char *t)
 {
   int i, j;
