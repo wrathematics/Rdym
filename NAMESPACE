@@ -1,2 +1,2 @@
-useDynLib(Rdym)
+useDynLib(Rdym, R_levenshtein_dist, R_find_closest_word)
 
