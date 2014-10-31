@@ -1,29 +1,3 @@
-find_closest_word <- function(input, words)
-{
-  shortest = -1L
-  
-  for (i in 1L:length(words))
-  {
-    dist <- levenshtein_dist(input, words[i])
-    if (dist == 0)
-    {
-      closest <- i
-      shortest = 0L
-      break
-    }
-    
-    if (dist < shortest || shortest < 0)
-    {
-      closest <- i
-      shortest <- dist
-    }
-  }
-  
-  return(list(dist=dist, word=words[closest]))
-}
-
-
-
 did_you_mean <- function(name, lastcall)
 {
   name <- sub(x=name, pattern="\\n", replacement="")
@@ -55,7 +29,6 @@ did_you_mean <- function(name, lastcall)
     printword <- word
   
   cat(paste0("\nDid you mean:  ", printword, "  ?\n"))
-#  if (type == "closure")
   if (!missing(lastcall))
   {
     cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))

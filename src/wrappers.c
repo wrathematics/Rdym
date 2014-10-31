@@ -27,13 +27,11 @@
 #include <Rinternals.h>
 #include <stdlib.h>
 #include <string.h>
+#include "dym.h"
 
-#define CHARPT(x,i)	((char*)CHAR(STRING_ELT(x,i)))
+#define CHARPT(x,i) ((char*)CHAR(STRING_ELT(x,i)))
 #define CHARARR(x) ((const char **)STRING_PTR(x))
-
-
-int levenshtein_dist(char *s, char *t);
-int did_you_mean(const char *input, const char **words, const int nwords, char **word);
+#define INT(x) INTEGER(x)[0]
 
 
 SEXP R_levenshtein_dist(SEXP s, SEXP t)
@@ -41,9 +39,58 @@ SEXP R_levenshtein_dist(SEXP s, SEXP t)
   SEXP ret;
   PROTECT(ret = allocVector(INTSXP, 1));
   
-  INTEGER(ret)[0] = levenshtein_dist(CHARPT(s,0), CHARPT(t,0));
+  INTEGER(ret)[0] = levenshtein_dist(CHARPT(s, 0), CHARPT(t, 0));
   
   UNPROTECT(1);
+  return ret;
+}
+
+
+
+SEXP R_find_closest_word(SEXP input, SEXP words)
+{
+  int i;
+  int least_dist;
+  int closest_word, current_dist;
+  const int nwords = LENGTH(words);
+  
+  SEXP ret, ret_names, dist, word;
+  PROTECT(dist = allocVector(INTSXP, 1));
+  
+  for (i=0; i<nwords; i++)
+  {
+    current_dist = levenshtein_dist(CHARPT(input, 0), CHARPT(words, i));
+    
+    if (current_dist == 0)
+    {
+      closest_word = i;
+      least_dist = 0;
+      break;
+    }
+    
+    if (current_dist < least_dist || i == 0)
+    {
+      closest_word = i;
+      least_dist = current_dist;
+    }
+  }
+  
+  
+  INT(dist) = current_dist;
+  
+  PROTECT(word = allocVector(STRSXP, 1));
+  SET_STRING_ELT(word, 0, mkChar(CHARPT(words, closest_word)));
+  
+  PROTECT(ret = allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(ret, 0, dist);
+  SET_VECTOR_ELT(ret, 1, word);
+  
+  PROTECT(ret_names = allocVector(STRSXP, 2));
+  SET_STRING_ELT(ret_names, 0, mkChar("dist"));
+  SET_STRING_ELT(ret_names, 1, mkChar("word"));
+  setAttrib(ret, R_NamesSymbol, ret_names);
+  
+  UNPROTECT(4);
   return ret;
 }
 
