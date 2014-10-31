@@ -4,15 +4,22 @@ matcherr <- function(msg, pattern)
 }
 
 
-stop_dym <- function()
+
+get_lastcall <- function()
 {
-  ### Get command that errored
   Rhistfile <- tempfile(".Rhistory")
   savehistory(Rhistfile)
   Rhist <- readLines(Rhistfile)
   unlink(Rhistfile)
   
-  lastcall <- Rhist[length(Rhist)]
+  return( Rhist[length(Rhist)] )
+}
+
+
+
+stop_dym <- function()
+{
+  lastcall <- get_lastcall()
   
   ### Handle error message
   msg <- geterrmessage()
@@ -29,6 +36,10 @@ stop_dym <- function()
     obj <- sub(x=obj, pattern="' not found\\n", replacement="")
     did_you_mean(obj, lastcall)
   }
+  else if (matcherr(msg=msg, pattern="unused argument(?s)"))
+  {
+    #TODO
+  }
   else
   {
     #TODO
@@ -37,13 +48,3 @@ stop_dym <- function()
   invisible()
 }
 
-.onLoad <- function(libname, pkgname)
-{
-  options(error=stop_dym)
-  invisible()
-}
-
-.onUnload <- function(libpath)
-{
-  options(error=NULL)
-}
