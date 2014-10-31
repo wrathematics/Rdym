@@ -21,6 +21,8 @@ With the R-did-you-mean package, you can get a "did you mean?"
 suggestion listed with the error:
 
 ```r
+library(Rdym)
+
 shapro.test(x=rnorm(20))
 # Error: could not find function "shapro.test"
 # 
