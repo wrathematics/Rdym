@@ -1,7 +1,5 @@
 did_you_mean <- function(name, lastcall)
 {
-  # for debugging:
-  print(search())
   
   name <- sub(x=name, pattern="\\n", replacement="")
   with.namespace <- length(grep(x=name, pattern="::")) > 0

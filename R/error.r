@@ -7,15 +7,22 @@ matcherr <- function(msg, pattern)
 
 get_lastcall <- function()
 {
-  Rhistfile <- tempfile(".Rhistory")
-  savehistory(Rhistfile)
-  Rhist <- readLines(Rhistfile)
-  unlink(Rhistfile)
-  
-  return( Rhist[length(Rhist)] )
+
+# original code
+#   Rhistfile <- tempfile(".Rhistory")
+#   savehistory(Rhistfile)
+#   Rhist <- readLines(Rhistfile)
+#   unlink(Rhistfile)
+#   return(Rhist[length(Rhist)])
+
+
+# Let's try using .Traceback, in case user spread call over
+# several lines
+
+  stack <- .Traceback
+  return(stack[[length(stack)]])
+
 }
-
-
 
 stop_dym <- function()
 {
@@ -32,7 +39,7 @@ stop_dym <- function()
   }
   else if (matcherr(msg=msg, pattern="not found"))
   {
-    obj <- sub(x=msg, pattern=".*: object '", replacement="")
+    obj <- sub(x=msg, pattern=".*object '", replacement="")
     obj <- sub(x=obj, pattern="' not found\\n", replacement="")
     did_you_mean(obj, lastcall)
   }
