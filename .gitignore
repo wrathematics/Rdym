@@ -5,3 +5,5 @@
 *.status
 *~
 .Rproj.user
+.RData
+.Rhistory
