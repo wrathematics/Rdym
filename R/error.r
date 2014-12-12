@@ -16,7 +16,7 @@ get_lastcall <- function()
 #   return(Rhist[length(Rhist)])
 
 
-# Let's try using .Traceback, in case user spread call over
+# Let's try using traceback(), in case user spreads call over
 # several lines
   
   ## capture all the output to a file.
@@ -31,7 +31,7 @@ get_lastcall <- function()
 
 }
 
-get_lastcall_func <- function(name)
+get_lastcall_2 <- function(name)
 {
   Rhistfile <- tempfile(".Rhistory")
   savehistory(Rhistfile)
@@ -50,6 +50,10 @@ get_lastcall_func <- function(name)
 }
 
 
+# TODO in this function:  correctly handle "is not an exported object from"
+# Also, problem in simpleFind:  when you use pckg::func() and mess up inside,
+# simpleFind makes wrong choice about what cannot be found
+
 stop_dym <- function()
 {
   
@@ -65,13 +69,18 @@ stop_dym <- function()
     fun <- sub(x=fun, pattern="\"", replacement="")
     fun <- sub(x=fun, pattern="\\n", replacement="")
     
-    lastcall <- get_lastcall_func(fun)
+    lastcall <- get_lastcall_2(fun)
     did_you_mean(fun, lastcall,problem="function")
   }
   else if (matcherr(msg=msg, pattern="not found"))
   {
     obj <- sub(x=msg, pattern=".*object '", replacement="")
     obj <- sub(x=obj, pattern="' not found\\n", replacement="")
+    
+    #isolated object?
+    l2 <- get_lastcall_2(obj)
+    if (l2 == obj) lastcall <- l2
+    
     did_you_mean(obj, lastcall,problem="object")
   }
   else if (matcherr(msg=msg, pattern="there is no package called"))
