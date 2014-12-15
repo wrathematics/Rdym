@@ -2,7 +2,15 @@ Package: Rdym
 License: BSD 2-clause License + file LICENSE
 Version: 0.2.0
 Title: A "did you mean?" utilitiy for R.
-Description: TODO
+Description: Most search engines have a "did you mean?" feature, where 
+  suggestions are given in the presence of likely typos.  The Rdym package
+  somewhat replicates this functionality with ancient spellchecker techniques.
+  When R detects that a function or object listed in the user's input is not 
+  found, the package finds the minimum Levenshtein distance between the 
+  "unfound" token and all symbols in the user's global environment plus all 
+  loaded namespaces.  The word with minimum Levenshtein distance (in the event
+  of ties, the first such detected) is then suggested as an alternative to the
+  missing symbol.
 NeedsCompilation: yes
 ByteCompile: yes
 Depends: R (>= 2.14.0)
