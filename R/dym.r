@@ -28,7 +28,11 @@ did_you_mean <- function(name, lastcall)
   else
     printword <- word
   
-  cat(paste0("\nDid you mean:  ", printword, "  ?\n"))
+  
+  lang <- get_language()
+  dym_local <- dym_translate(lang=lang)
+  
+  cat(paste0("\n", dym_local, printword, "  ?\n"))
   if (!missing(lastcall))
   {
     cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
