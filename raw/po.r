@@ -9,10 +9,12 @@ files <- files[!grepl(x=files, pattern="(R-|R[.]|RG)")]
 files
 
 
-pct_s <- paste0("[\\]?[\"\']", "%s", "[\\]?[\"\']")
+quote_hell <- "[\\]?[\"\'«»]" # what the hell, norway?
+pct_s <- paste0(quote_hell, "%s", quote_hell)
 
-missing_obj <- paste("object", pct_s, "not found")
-missing_fun <- paste("could not find function", pct_s)
+missing_obj <- paste0("msgid ", quote_hell, "object ", pct_s, " not found")
+missing_fun <- paste0("msgid ", quote_hell, "could not find function")
+
 
 len <- length(files)
 
@@ -30,7 +32,7 @@ prepost <- function(text, x)
 {
   x <- text[which(grepl(x=text, pattern=x)) + 1]
   x <- sub(x=x, pattern="msgstr ", replacement="")
-  x <- gsub(x=x, pattern="[\\]?[\"\']", replacement="")
+  x <- gsub(x=x, pattern=quote_hell, replacement="")
   x <- unlist(strsplit(x=x, split="%s"))
   
   x
@@ -56,5 +58,17 @@ delete <- ( is.na(langtable$obj_pre) & is.na(langtable$obj_post) ) |
 
 langtable <- langtable[!delete, ]
 
+for (j in 1:ncol(langtable)){
+  for (i in 1:nrow(langtable)){
+    if (is.na(langtable[i,j])) langtable[i,j] <- ""
+  }
+}
+
+
+langtable[nrow(langtable)+1, ] <- c("en", "object", "not found", "could not find function", "")
+rownames(langtable) <- NULL
+
+
 langtable
+# vi(langtable)
 
