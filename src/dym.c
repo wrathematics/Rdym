@@ -27,12 +27,11 @@
 
 
 // Based on the explanation here: https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows
-int levenshtein_dist(const char *s, const char *t)
+int levenshtein_dist_noalloc(const char *s, const char *t, ldint_t *v0, ldint_t *v1)
 {
   int i, j;
   int ret;
   ldint_t cost;
-  ldint_t *v0, *v1;
   
   const size_t slen = strlen(s);
   const size_t tlen = strlen(t);
@@ -41,10 +40,6 @@ int levenshtein_dist(const char *s, const char *t)
   if (strcmp(s, t) == 0) return 0;
   if (strlen(s) == 0) return strlen(t);
   if (strlen(t) == 0) return strlen(s);
-  
-  
-  v0 = malloc(vlen * sizeof(ldint_t));
-  v1 = malloc(vlen * sizeof(ldint_t));
   
   
   for (i=0; i<vlen; i++)
@@ -65,6 +60,23 @@ int levenshtein_dist(const char *s, const char *t)
   }
   
   ret = (int) v1[tlen];
+  
+  return ret;
+}
+
+
+
+int levenshtein_dist(const char *s, const char *t)
+{
+  int ret;
+  ldint_t *v0, *v1;
+  
+  const size_t vlen = strlen(t) + 1;
+  
+  v0 = malloc(vlen * sizeof(*v0));
+  v1 = malloc(vlen * sizeof(*v1));
+  
+  ret = levenshtein_dist_noalloc(s, t, v0, v1);
   
   free(v0);
   free(v1);

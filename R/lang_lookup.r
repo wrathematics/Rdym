@@ -35,6 +35,8 @@ get_language <- function()
   lang <- Sys.getenv()["LANGUAGE"]
   lang <- sub(x=lang, pattern="^.*:", replacement="")
   
+  if (lang == "en_US") lang <- "en"
+  
   lang
 }
 
