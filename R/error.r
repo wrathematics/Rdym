@@ -4,97 +4,92 @@ matcherr <- function(msg, pattern)
 }
 
 
-
-get_lastcall <- function()
-{
-
-# original code
-#   Rhistfile <- tempfile(".Rhistory")
-#   savehistory(Rhistfile)
-#   Rhist <- readLines(Rhistfile)
-#   unlink(Rhistfile)
-#   return(Rhist[length(Rhist)])
-
-
-# Let's try using traceback(), in case user spreads call over
-# several lines
-  
-  ## capture all the output to a file.
-  dumpFile <- file("all.Rout", open = "wt")
-  sink(dumpFile,type="output")
-  stack <- traceback(1)
-  sink(type="message")
-  sink()
-  close(dumpFile)
-  unlink("all.Rout")
-  return(stack[[length(stack)]])
-
-}
-
-get_lastcall_2 <- function(name)
-{
-  Rhistfile <- tempfile(".Rhistory")
-  savehistory(Rhistfile)
-  Rhist <- readLines(Rhistfile)
-  unlink(Rhistfile)
-  
-  m <- length(Rhist)
-  current <- Rhist[m]
-  place <- m
-  while (length(grep(x=current,pattern=name))==0 ){
-    place <- place -1 
-    current <- paste0(Rhist[place],current)
-  }
-  command <- gsub(x=current,pattern=paste0(".*",name),replace=name)
-  return(command)
-}
-
-
 # TODO in this function:  correctly handle "is not an exported object from"
 # Also, problem in simpleFind:  when you use pckg::func() and mess up inside,
 # simpleFind makes wrong choice about what cannot be found
 
 stop_dym <- function()
 {
-  
-  lastcall <- get_lastcall()
+
   ### Handle error message
   msg <- geterrmessage()
   
-  
+  get_lastcall <- function(msg) {
+      #try to get from history
+      #this will fail if user enters more than one command per line
+      #but if command is spread over multiple lines we are fine
+    
+      #assume input is not spread over more than this number of lines plus one:
+      backsearch_limit <- 10
+      
+      Rhistfile <- tempfile(".Rhistory")
+      savehistory(Rhistfile)
+      Rhist <- readLines(Rhistfile)
+      unlink(Rhistfile)
+      n <- length(Rhist)
+      place <- n
+      match <- FALSE
+      call_frag <- Rhist[n]
+      safety <- 0 #count up to sanity_limit
+      while (!match && safety <= backsearch_limit) {
+        
+        #oddly, the following fails with text: "mean(NULL)",
+        #but it works fine from console
+        current_msg <- tryCatch(eval(parse(text=call_frag)),
+                                error=function(e) {
+                                  return(geterrmessage())
+                                })
+        
+        msg_chop <- sub(msg,pattern="Error.*: ",replace="")
+        msg_chop <- sub(msg_chop,pattern="[[:space:]]$",replace="")
+        msg_chop <- sub(msg_chop,pattern="^[[:space:]]*",replace="")
+        if (current_msg == msg_chop) {
+          match <- TRUE 
+        }
+          else {
+          place <- place - 1
+          safety <- safety + 1
+          call_frag <- paste0(Rhist[place],call_frag)
+        }
+      }
+      if (match == FALSE) return(NULL) else return(call_frag)
+  }
+  lastcall <- get_lastcall(msg)
+  print(lastcall)
   
   if (matcherr(msg=msg, pattern="could not find function") || matcherr(msg=msg, pattern="is not an exported object from"))
   {
     fun <- sub(x=msg, pattern=".*could not find function \"", replacement="")
     fun <- sub(x=fun, pattern="\"", replacement="")
     fun <- sub(x=fun, pattern="\\n", replacement="")
-    
-    lastcall <- get_lastcall_2(fun)
-    did_you_mean(fun, lastcall,problem="function")
+    did_you_mean(fun, lastcall,problem="function",msg)
   }
-  else if (matcherr(msg=msg, pattern="not found"))
+  
+  if (matcherr(msg=msg, pattern="is not an exported object from"))
+  {
+    notExported <- sub(x=msg, pattern="Error: ", replacement="")
+    notExported <- sub(x=notExported, pattern=" is not an exported object from.*", replacement="")
+    notExported <- gsub(x=notExported, pattern="'", replacement="")
+    did_you_mean(notExported, lastcall,problem="not_exported",msg)
+  }
+  
+  
+  if (matcherr(msg=msg, pattern="not found"))
   {
     obj <- sub(x=msg, pattern=".*object '", replacement="")
-    obj <- sub(x=obj, pattern="' not found\\n", replacement="")
-    
-    #isolated object?
-    l2 <- get_lastcall_2(obj)
-    if (l2 == obj) lastcall <- l2
-    
-    did_you_mean(obj, lastcall,problem="object")
+    obj <- sub(x=obj, pattern="' not found\\n", replacement="") 
+    did_you_mean(obj, lastcall,problem="object",msg)
   }
-  else if (matcherr(msg=msg, pattern="there is no package called"))
+  
+  if (matcherr(msg=msg, pattern="there is no package called"))
   {
     pack <- sub(x=msg, pattern=".*there is no package called ", replacement="")
     pack <- sub(x=pack, pattern="\\n", replacement="")
     pack <- gsub(pack,pattern="[[:punct:]]",replace="")
-    did_you_mean(pack, lastcall,problem="package")
+    did_you_mean(pack, lastcall,problem="package",msg)
   }
-  else if (matcherr(msg=msg, pattern="unused argument(?s)"))
-  {
-    #TODO
-  }
-  else
+  
+  if (matcherr(msg=msg, pattern="unused argument(?s)"))
   {
     #TODO
   }
