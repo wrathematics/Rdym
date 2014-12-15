@@ -17,24 +17,48 @@ get_lastcall <- function()
 
 
 
+scrub <- function(msg, pre, post)
+{
+  if (pre != "") fun <- sub(x=msg, pattern=paste0(".*", pre), replacement="")
+  if (post != "") fun <- sub(x=fun, pattern=paste0(post, ".*"), replacement="")
+  
+  fun <- gsub(x=fun, pattern="( +|\"|\'|\\n|«|»)", replacement="")
+  
+  fun
+}
+
+
 stop_dym <- function()
 {
   lastcall <- get_lastcall()
   
-  ### Handle error message
   msg <- geterrmessage()
   
-  if (matcherr(msg=msg, pattern="could not find function") || matcherr(msg=msg, pattern="is not an exported object from"))
+  ### Language support
+  lang <- get_language()
+  check_lang(lang)
+  
+  missing_fun <- get_missing_fun(lang)
+  missing_obj <- get_missing_obj(lang)
+  
+  if (matcherr(msg=msg, pattern=missing_fun) || 
+      matcherr(msg=msg, pattern="is not an exported object from")) # TODO
   {
-    fun <- sub(x=msg, pattern=".*could not find function \"", replacement="")
-    fun <- sub(x=fun, pattern="\"", replacement="")
+    langrow <- get_langrow(lang=lang)
+    pre <- langtable$fun_pre[langrow]
+    post <- langtable$fun_post[langrow]
+    
+    fun <- scrub(msg=msg, pre=pre, post=post)
     did_you_mean(fun, lastcall)
   }
-  else if (matcherr(msg=msg, pattern="not found"))
+  else if (matcherr(msg=msg, pattern=missing_obj))
   {
-    obj <- sub(x=msg, pattern=".*: object '", replacement="")
-    obj <- sub(x=obj, pattern="' not found\\n", replacement="")
-    did_you_mean(obj, lastcall)
+    langrow <- get_langrow(lang=lang)
+    pre <- langtable$obj_pre[langrow]
+    post <- langtable$obj_post[langrow]
+    
+    fun <- scrub(msg=msg, pre=pre, post=post)
+    did_you_mean(fun, lastcall)
   }
   else if (matcherr(msg=msg, pattern="unused argument(?s)"))
   {
