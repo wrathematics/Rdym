@@ -55,7 +55,6 @@ stop_dym <- function()
       if (match == FALSE) return(NULL) else return(call_frag)
   }
   lastcall <- get_lastcall(msg)
-  print(lastcall)
   
   if (matcherr(msg=msg, pattern="could not find function") || matcherr(msg=msg, pattern="is not an exported object from"))
   {
