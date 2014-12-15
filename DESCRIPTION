@@ -9,3 +9,7 @@ Depends: R (>= 2.14.0)
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), 
         email = "wrathematics@gmail.com"))
 Maintainer: Drew Schmidt <wrathematics@gmail.com>
+
+barchartG(~Sex
++Seat,
+   data=M111survey)
