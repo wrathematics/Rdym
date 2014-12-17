@@ -106,7 +106,7 @@ https://tldrlegal.com/license/bsd-2-clause-license-%28freebsd%29
 The full terms of the license follows:
 
 ```
-Copyright (C) 2014 Drew Schmidt. All rights reserved.
+Copyright (C) 2014 Drew Schmidt and Homer White. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
