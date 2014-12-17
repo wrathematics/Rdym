@@ -1,6 +1,6 @@
 matcherr <- function(msg, pattern)
 {
-  length(grep(x=msg, pattern=pattern, perl=TRUE)) > 0
+  grepl(x=msg, pattern=pattern, perl=TRUE)
 }
 
 
