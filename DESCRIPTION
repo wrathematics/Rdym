@@ -1,6 +1,6 @@
 Package: Rdym
 License: BSD 2-clause License + file LICENSE
-Version: 0.2.0
+Version: 0.3.0
 Title: A "did you mean?" utilitiy for R.
 Description: Most search engines have a "did you mean?" feature, where 
   suggestions are given in the presence of likely typos.  The Rdym package
@@ -13,7 +13,8 @@ Description: Most search engines have a "did you mean?" feature, where
   missing symbol.
 NeedsCompilation: yes
 ByteCompile: yes
-Depends: R (>= 2.14.0)
+Depends: R (>= 2.14.0), pryr
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), 
-        email = "wrathematics@gmail.com"))
+  email = "wrathematics@gmail.com"), person("Homer", "White", 
+  role="aut"))
 Maintainer: Drew Schmidt <wrathematics@gmail.com>
