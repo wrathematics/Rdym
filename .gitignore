@@ -4,3 +4,7 @@
 *.log
 *.status
 *~
+.Rproj.user
+.RData
+.Rhistory
+scratch.R

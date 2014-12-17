@@ -1,1 +1,4 @@
 raw/
+^.*\.Rproj$
+^\.Rproj\.user$
+scratch.R
