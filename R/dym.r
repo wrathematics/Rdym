@@ -1,4 +1,4 @@
-did_you_mean <- function(name, lastcall,problem,msg)
+did_you_mean <- function(name, lastcall, problem, msg)
 {
   name <- sub(x=name, pattern="\\n", replacement="")
   #with.namespace <- length(grep(x=name, pattern="::")) > 0
@@ -21,7 +21,7 @@ did_you_mean <- function(name, lastcall,problem,msg)
   {
     msg_frag <- sub(x=msg, pattern=".*namespace:", replacement="")
     pkg <- sub(x=msg_frag, pattern="'", replacement="")
-    pkg <- sub(x=pkg,pattern="[[:space:]]$",replace="")
+    pkg <- sub(x=pkg,pattern="[[:space:]]$", replacement="")
     
     package_title <- paste0("package:",pkg)
     if (package_title %in% search()) {

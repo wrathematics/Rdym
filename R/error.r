@@ -43,9 +43,9 @@ get_lastcall <- function(msg)
     error <- function(e) geterrmessage()
     current_msg <- tryCatch(eval(parse(text=call_frag)), error=error)
     
-    msg_chop <- sub(msg,pattern="Error.*: ",replace="")
-    msg_chop <- sub(msg_chop,pattern="[[:space:]]$",replace="")
-    msg_chop <- sub(msg_chop,pattern="^[[:space:]]*",replace="")
+    msg_chop <- sub(msg,pattern="Error.*: ",replacement="")
+    msg_chop <- sub(msg_chop,pattern="[[:space:]]$",replacement="")
+    msg_chop <- sub(msg_chop,pattern="^[[:space:]]*",replacement="")
     if (current_msg == msg_chop) {
       match <- TRUE 
     }
@@ -104,7 +104,7 @@ stop_dym <- function()
   {
     pack <- sub(x=msg, pattern=".*there is no package called ", replacement="")
     pack <- sub(x=pack, pattern="\\n", replacement="")
-    pack <- gsub(pack,pattern="[[:punct:]]",replace="")
+    pack <- gsub(pack,pattern="[[:punct:]]",replacement="")
     did_you_mean(pack, lastcall,problem="package",msg)
   }
   
