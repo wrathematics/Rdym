@@ -1,0 +1,14 @@
+citHeader("To cite the Rdym package:")
+
+citEntry(
+  entry = "Misc",
+  title = "Rdym: A 'did you mean?' utilitiy for R.",
+  author = personList(as.person("Drew Schmidt"), 
+                      as.person("Homer White")),
+  year = "2014",
+  note = "{R} Package",
+  url = "https://github.com/wrathematics/Rdym",
+  textVersion = "Schmidt, D. and H. White. (2014) Rdym: A 'did you mean?' utilitiy for R. R Package, URL https://github.com/wrathematics/Rdym",
+  key = "RdymRPackage"
+)
+
