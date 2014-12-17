@@ -38,8 +38,8 @@ int levenshtein_dist_noalloc(const char *s, const char *t, ldint_t *v0, ldint_t 
   const size_t vlen = tlen + 1;
   
   if (strcmp(s, t) == 0) return 0;
-  if (strlen(s) == 0) return strlen(t);
-  if (strlen(t) == 0) return strlen(s);
+  if (slen == 0) return tlen;
+  if (tlen == 0) return slen;
   
   
   for (i=0; i<vlen; i++)
