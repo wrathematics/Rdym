@@ -75,6 +75,7 @@ stop_dym <- function()
   msg <- geterrmessage()
   lastcall <- get_lastcall(msg)
   
+  
   if (matcherr(msg=msg, pattern=missing_fun))
   {
     langrow <- get_langrow(lang=lang)

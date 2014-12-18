@@ -38,15 +38,10 @@ did_you_mean <- function(name, lastcall, problem, msg)
   }
   else if (problem == "object")
   {
-#    if (!is.null(lastcall))
-#    {
-      expr <- parse(text=lastcall)
-      objs <- process_ast(capture.output(do.call(pryr::call_tree, list(expr))))
-      closest <- find_closest_word(name, objs)
-      word <- closest$word
-#      cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
-#    }
-#    return(invisible())
+    expr <- parse(text=lastcall)
+    objs <- process_ast(capture.output(do.call(pryr::call_tree, list(expr))))
+    closest <- find_closest_word(name, objs)
+    word <- closest$word
   }
   
   

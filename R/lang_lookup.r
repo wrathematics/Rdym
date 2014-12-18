@@ -35,7 +35,8 @@ get_missing_obj <- function(lang)
 {
   langrow <- get_langrow(lang=lang)
   
-  paste0("(?<=", langtable$obj_pre[langrow], ")(.*)(?=", langtable$obj_post[langrow], ")")
+  obj <- paste0("(?<=", langtable$obj_pre[langrow], ")(.*)(?=", langtable$obj_post[langrow], ")")
+  return(obj)
 }
 
 
@@ -44,7 +45,8 @@ get_missing_fun <- function(lang)
 {
   langrow <- get_langrow(lang=lang)
   
-  paste0("(?<=", langtable$fun_pre[langrow], ")(.*)(?=", langtable$fun_post[langrow], ")")
+  fun <- paste0("(?<=", langtable$fun_pre[langrow], ")(.*)(?=", langtable$fun_post[langrow], ")")
+  return(fun)
 }
 
 
