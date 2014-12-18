@@ -3,9 +3,8 @@ get_language <- function()
   lang <- Sys.getenv()["LANGUAGE"]
   lang <- sub(x=lang, pattern="^.*:", replacement="")
   
-  if (lang == "en_US") lang <- "en"
-  
-  if (!(lang %in% langtable$lang)) lang <- "en"
+  if (is.na(lang)) lang <- "en"
+  else if (!(lang %in% langtable$lang)) lang <- "en"
   
   return(lang)
 }
