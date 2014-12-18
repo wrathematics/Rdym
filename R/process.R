@@ -11,7 +11,7 @@ process_ast <- function (ast_output) {
   isolate_variable_name <- function(string) {
     m <- regexpr(variable_pattern,string)
     temp <- regmatches(x=string,m)
-    return(gsub(temp,pattern="`",replace="")) 
+    return(gsub(temp,pattern="`", replacement="")) 
   }
   
   #make the list of possible containers:

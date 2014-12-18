@@ -57,9 +57,17 @@ SEXP R_find_closest_word(SEXP input, SEXP words)
   SEXP ret, ret_names, dist, word;
   PROTECT(dist = allocVector(INTSXP, 1));
   
+  ldint_t *v0, *v1;
+  
+  const size_t vlen = strlen(CHARPT(input, 0)) + 1;
+  
+  v0 = malloc(vlen * sizeof(*v0));
+  v1 = malloc(vlen * sizeof(*v1));
+  
+  
   for (i=0; i<nwords; i++)
   {
-    current_dist = levenshtein_dist(CHARPT(input, 0), CHARPT(words, i));
+    current_dist = levenshtein_dist_noalloc(CHARPT(words, i), CHARPT(input, 0), v0, v1);
     
     if (current_dist == 0)
     {
@@ -75,6 +83,8 @@ SEXP R_find_closest_word(SEXP input, SEXP words)
     }
   }
   
+  free(v0);
+  free(v1);
   
   INT(dist) = current_dist;
   

@@ -1,7 +1,8 @@
-did_you_mean <- function(name, lastcall,problem,msg)
+did_you_mean <- function(name, lastcall, problem, msg)
 {
   name <- sub(x=name, pattern="\\n", replacement="")
   #with.namespace <- length(grep(x=name, pattern="::")) > 0
+  
   
   if (problem == "function") {
     #make the basic objects list:
@@ -9,31 +10,18 @@ did_you_mean <- function(name, lastcall,problem,msg)
     objs <- unique(c(ls(), do.call(c, objs)))
     closest <- find_closest_word(name, objs)
     word <- closest$word
-    cat(paste0("\nDid you mean:  ", word, "  ?\n"))
-    if (!is.null(lastcall))
-    {
-      cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
-    }
-    return(invisible())
   }
-  
-  if (problem=="package") {
+  else if (problem=="package") 
+  {
     objs <- installed.packages()[,"Package"]
     closest <- find_closest_word(name, objs)
     word <- closest$word
-    cat(paste0("\nDid you mean:  ", word, "  ?\n"))
-    if (!is.null(lastcall))
-    {
-      cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
-    }
-    return(invisible())
   }
-  
-  if (problem == "not_exported")
+  else if (problem == "not_exported")
   {
     msg_frag <- sub(x=msg, pattern=".*namespace:", replacement="")
     pkg <- sub(x=msg_frag, pattern="'", replacement="")
-    pkg <- sub(x=pkg,pattern="[[:space:]]$",replace="")
+    pkg <- sub(x=pkg,pattern="[[:space:]]$", replacement="")
     
     package_title <- paste0("package:",pkg)
     if (package_title %in% search()) {
@@ -46,31 +34,28 @@ did_you_mean <- function(name, lastcall,problem,msg)
     }
     closest <- find_closest_word(name, objs)
     word <- closest$word
-    suggestion <- paste0(pkg,"::",word)
-    cat(paste0("\nDid you mean:  ", suggestion, "  ?\n"))
-    if (!is.null(lastcall))
-    {
-      cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
-    }
-    return(invisible())
-    
+    word <- paste0(pkg, "::", word)
   }
-
-  if (problem == "object") {
-
-    if (!is.null(lastcall))
-    {
-      expr <- parse(text=lastcall)
-      objs <- process_ast(capture.output(do.call(pryr::call_tree,list(expr))))
-      closest <- find_closest_word(name, objs)
-      word <- closest$word
-      cat(paste0("\nDid you mean:  ", word, "  ?\n"))
-      cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
-    }
-    return(invisible())
+  else if (problem == "object")
+  {
+    expr <- parse(text=lastcall)
+    objs <- process_ast(capture.output(do.call(pryr::call_tree, list(expr))))
+    closest <- find_closest_word(name, objs)
+    word <- closest$word
   }
   
-  invisible()
+  
+  lang <- get_language()
+  dym_local <- dym_translate(lang=lang)
+  
+  cat(paste0("\n", dym_local, word, "  ?\n"))
+  if (!is.null(lastcall))
+  {
+    cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
+  }
+  
+  
+  return(invisible())
 }
 
 
