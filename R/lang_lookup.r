@@ -37,12 +37,16 @@ get_language <- function()
   
   if (lang == "en_US") lang <- "en"
   
-  lang
+  if (!(lang %in% langtable$lang)) lang <- "en"
+  
+  return(lang)
 }
 
 get_langrow <- function(lang)
 {
-  which(langtable$lang == lang)
+  row <- which(langtable$lang == lang)
+  
+  return(row)
 }
 
 check_lang <- function(lang)
@@ -50,7 +54,7 @@ check_lang <- function(lang)
   if (length(get_langrow(lang=lang)) == 0)
     stop("Language is not supported in Rdym at this time.  If you have localization support in R, please file an issue with Rdym.")
   
-  invisible()
+  return(invisible())
 }
 
 get_missing_obj <- function(lang)
@@ -101,6 +105,6 @@ dym_translate <- function(lang)
   else
     dym <- "Did you mean"
   
-  paste0(dym, ":  ")
+  return(paste0(dym, ":  "))
 }
 
