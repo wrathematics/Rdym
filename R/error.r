@@ -13,7 +13,7 @@ scrub <- function(msg, pre, post)
   if (pre != "") fun <- sub(x=msg, pattern=paste0(".*", pre), replacement="")
   if (post != "") fun <- sub(x=fun, pattern=paste0(post, ".*"), replacement="")
   
-  fun <- gsub(x=fun, pattern="( +|\"|\'|\\n|«|»)", replacement="")
+  fun <- gsub(x=fun, pattern="( +|\"|\'|\\n|\u00ab|\u00bb)", replacement="")
   
   fun
 }

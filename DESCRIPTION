@@ -11,8 +11,8 @@ Description: Most search engines have a "did you mean?" feature, where
   loaded namespaces.  The word with minimum Levenshtein distance (in the event
   of ties, the first such detected) is then suggested as an alternative to the
   missing symbol.
-NeedsCompilation: yes
 ByteCompile: yes
+NeedsCompilation: yes
 Depends: R (>= 2.14.0), pryr
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), 
   email = "wrathematics@gmail.com"), person("Homer", "White", 
