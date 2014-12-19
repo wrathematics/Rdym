@@ -16,5 +16,5 @@ NeedsCompilation: yes
 Depends: R (>= 2.14.0), pryr
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), 
   email = "wrathematics@gmail.com"), person("Homer", "White", 
-  role="aut"))
+  role="aut", email="hwhite0@georgetowncollege.edu"))
 Maintainer: Drew Schmidt <wrathematics@gmail.com>
