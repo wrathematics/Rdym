@@ -47,10 +47,26 @@ did_you_mean <- function(name, lastcall, problem, msg)
     
     # we need to recover the top call in the stack.  .Traceback won't give
     # the current stack, because the error is still being "handled".
-    # fortuntately R mentions the top call in the error message.
+    # fortunately R mentions the top call in the error message.
     #Let's isolate it:
     temp <- sub(msg,pattern="Error in ",replace="")
     topcall <- sub(temp,pattern=" : .*",replace="")
+    #Question:  does this use of sub give problems in other languages?
+    
+    #Problem: if the top call is very long, then the above returns only an
+    #initial substring of it.  This will happen frequently in complex graphics
+    # functions, where arguments give titles, axis labels, etc.
+    #To hedge against this possibility:
+    
+    topcall <- space_scrub(topcall)
+    lastcall <- space_scrub(lastcall)
+    tc_length <- nchar(topcall)
+    if ((substr(lastcall,1,tc_length))==topcall) { #topcall probably is original call
+      topcall <- lastcall
+    }
+    
+    # Still this could blow up if calls are nested and topcall is long
+    
     
     
     # recover the unused argument(s) from the error message:
@@ -59,34 +75,30 @@ did_you_mean <- function(name, lastcall, problem, msg)
     with_namespace <- length(grep(topcall,pattern="::")) > 0
     #well, it PROBABLY involves a namespace!
     
-    #not ready yet to handle this case, so ...
-    if (with_namespace) {
-      return(invisible())
-    }
-    
     # for each unused argument, find a suggested replacement:
     replacements <- sapply(unused_args,find_replacement,topcall=topcall,
                            with_namespace=with_namespace)
     
     # make the replacments in topcall:
     better_call <- topcall
-    for (i in 1:length(replacements)) {
+    rep_length <- length(replacements)
+    for (i in 1:rep_length) {
       better_call <- sub(better_call,pattern=unused_args[i],
                          replace=replacements[i])
     }
     
-    # we will need to clean spacing from both lastcall and better_call, if we
-    # want the substitution to occur
-    space_scrub <- function(str) {
-      gsub(str,pattern="[[:blank:]]",replace="")
-    }
+   suggested_args <- character()
+   for (i in 1:(rep_length-1)) {
+     suggested_args <- paste0(suggested_args,replacements[i],", ")
+   }
+   suggested_args <- paste0(suggested_args,replacements[rep_length])
     
     # perform console output (sorry, cannot use procedure common to the
     # other errors)
     
     lang <- get_language()
     dym_local <- dym_translate(lang=lang)    
-    cat(paste0("\n", dym_local, better_call, "  ?\n"))
+    cat(paste0("\n", dym_local, suggested_args, "  ?\n"))
     if (!is.null(lastcall)) {
       lastcall <- space_scrub(lastcall)
       better_call <- space_scrub(better_call)
