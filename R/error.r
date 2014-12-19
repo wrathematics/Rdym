@@ -110,8 +110,10 @@ stop_dym <- function()
   }
   
   if (matcherr(msg=msg, pattern="unused argument(?s)"))
-  {
-    #TODO
+  {  
+    # best to work on problematic tokens in dym.R, so put a placeholder
+    #for name argument:
+    did_you_mean(name="placeholder",lastcall,problem="unused_arguments",msg)
   }
   
   invisible()

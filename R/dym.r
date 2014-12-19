@@ -1,7 +1,6 @@
 did_you_mean <- function(name, lastcall, problem, msg)
 {
   name <- sub(x=name, pattern="\\n", replacement="")
-  #with.namespace <- length(grep(x=name, pattern="::")) > 0
   
   
   if (problem == "function") {
@@ -43,7 +42,64 @@ did_you_mean <- function(name, lastcall, problem, msg)
     closest <- find_closest_word(name, objs)
     word <- closest$word
   }
+  else if (problem == "unused_arguments") {
+    
+    
+    # we need to recover the top call in the stack.  .Traceback won't give
+    # the current stack, because the error is still being "handled".
+    # fortuntately R mentions the top call in the error message.
+    #Let's isolate it:
+    temp <- sub(msg,pattern="Error in ",replace="")
+    topcall <- sub(temp,pattern=" : .*",replace="")
+    
+    
+    # recover the unused argument(s) from the error message:
+    unused_args <- find_unused_args(msg)
+    
+    with_namespace <- length(grep(topcall,pattern="::")) > 0
+    #well, it PROBABLY involves a namespace!
+    
+    #not ready yet to handle this case, so ...
+    if (with_namespace) {
+      return(invisible())
+    }
+    
+    # for each unused argument, find a suggested replacement:
+    replacements <- sapply(unused_args,find_replacement,topcall=topcall,
+                           with_namespace=with_namespace)
+    
+    # make the replacments in topcall:
+    better_call <- topcall
+    for (i in 1:length(replacements)) {
+      better_call <- sub(better_call,pattern=unused_args[i],
+                         replace=replacements[i])
+    }
+    
+    # we will need to clean spacing from both lastcall and better_call, if we
+    # want the substitution to occur
+    space_scrub <- function(str) {
+      gsub(str,pattern="[[:blank:]]",replace="")
+    }
+    
+    # perform console output (sorry, cannot use procedure common to the
+    # other errors)
+    
+    lang <- get_language()
+    dym_local <- dym_translate(lang=lang)    
+    cat(paste0("\n", dym_local, better_call, "  ?\n"))
+    if (!is.null(lastcall)) {
+      lastcall <- space_scrub(lastcall)
+      better_call <- space_scrub(better_call)
+      topcall <- space_scrub(topcall)
+      suggestion <- substr_find_and_replace(lastcall,topcall,better_call) 
+      cat(paste0(suggestion, "\n"))
+    }
+
+    return(invisible())
+     
+  }
   
+  #the following applies to errors other than unused arguments:
   
   lang <- get_language()
   dym_local <- dym_translate(lang=lang)
@@ -54,8 +110,7 @@ did_you_mean <- function(name, lastcall, problem, msg)
     cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
   }
   
-  
   return(invisible())
-}
+} # end handling unused arguments
 
 
