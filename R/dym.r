@@ -1,4 +1,4 @@
-did_you_mean <- function(name, lastcall, problem, msg)
+did_you_mean <- function(name, lastcall, problem, msg, call_stack)
 {
   name <- sub(x=name, pattern="\\n", replacement="")
   
@@ -15,13 +15,24 @@ did_you_mean <- function(name, lastcall, problem, msg)
     objs <- installed.packages()[,"Package"]
     closest <- find_closest_word(name, objs)
     word <- closest$word
+    
+    # in order to make suggested code, take a risk and get lastcall
+    # from history:
+    
+    lastcall <- get_lastcall(call_stack=1,msg)
+    
   }
   else if (problem == "not_exported")
   {
-    msg_frag <- sub(x=msg, pattern=".*namespace:", replacement="")
-    pkg <- sub(x=msg_frag, pattern="'", replacement="")
-    pkg <- sub(x=pkg,pattern="[[:space:]]$", replacement="")
     
+#     msg_frag <- sub(x=msg, pattern=".*namespace:", replacement="")
+#     pkg <- sub(x=msg_frag, pattern="'", replacement="")
+#     pkg <- sub(x=pkg,pattern="[[:space:]]$", replacement="")
+
+    # last call
+    pkg <- as.character(as.list(lastcall)[[2]]) # gets the package
+    name <- as.character(as.list(lastcall)[[3]]) # gets the alleged function
+
     package_title <- paste0("package:",pkg)
     if (package_title %in% search()) {
       objs <- objects(paste0("package:", pkg))
@@ -31,9 +42,15 @@ did_you_mean <- function(name, lastcall, problem, msg)
       #at least you get the ones exported from the
       #package
     }
+
     closest <- find_closest_word(name, objs)
     word <- closest$word
-    word <- paste0(pkg, "::", word)
+
+    # in order to make suggested code, take a risk and get lastcall
+    # from history:
+
+    lastcall <- get_lastcall(call_stack=1,msg)
+
   }
   else if (problem == "object")
   {
@@ -44,13 +61,18 @@ did_you_mean <- function(name, lastcall, problem, msg)
   }
   else if (problem == "unused_arguments") {
     
+    ### Easier now to find topcall now (see the anxious discussion below)
+    cs_length <- length(call_stack)
+    topcall <- call_stack[[cs_length - 1]]
+    # stop_dym is the last call in this list
+    
     
     # we need to recover the top call in the stack.  .Traceback won't give
     # the current stack, because the error is still being "handled".
     # fortunately R mentions the top call in the error message.
     #Let's isolate it:
-    temp <- sub(msg,pattern="Error in ",replace="")
-    topcall <- sub(temp,pattern=" : .*",replace="")
+#     temp <- sub(msg,pattern="Error in ",replace="")
+#     topcall <- sub(temp,pattern=" : .*",replace="")
     #Question:  does this use of sub give problems in other languages?
     
     #Problem: if the top call is very long, then the above returns only an
@@ -58,12 +80,12 @@ did_you_mean <- function(name, lastcall, problem, msg)
     # functions, where arguments give titles, axis labels, etc.
     #To hedge against this possibility:
     
-    topcall <- space_scrub(topcall)
-    lastcall <- space_scrub(lastcall)
-    tc_length <- nchar(topcall)
-    if ((substr(lastcall,1,tc_length))==topcall) { #topcall probably is original call
-      topcall <- lastcall
-    }
+#     topcall <- space_scrub(topcall)
+#     lastcall <- space_scrub(lastcall)
+#     tc_length <- nchar(topcall)
+#     if ((substr(lastcall,1,tc_length))==topcall) { #topcall probably is original call
+#       topcall <- lastcall
+#     }
     
     # Still this could blow up if calls are nested and topcall is long
     
@@ -71,22 +93,17 @@ did_you_mean <- function(name, lastcall, problem, msg)
     
     # recover the unused argument(s) from the error message:
     unused_args <- find_unused_args(msg)
-    
-    with_namespace <- length(grep(topcall,pattern="::")) > 0
-    #well, it PROBABLY involves a namespace!
+
+    #see if a namespace is involved in the topcall:
+    top_func_call <- as.character(topcall)[[1]]
+
+    with_namespace <- length(grep(top_func_call,pattern="::")) > 0
     
     # for each unused argument, find a suggested replacement:
     replacements <- sapply(unused_args,find_replacement,topcall=topcall,
                            with_namespace=with_namespace)
     
-    # make the replacments in topcall:
-    better_call <- topcall
-    rep_length <- length(replacements)
-    for (i in 1:rep_length) {
-      better_call <- sub(better_call,pattern=unused_args[i],
-                         replace=replacements[i])
-    }
-    
+   rep_length <- length(replacements)
    suggested_args <- character()
    if (rep_length > 1) {
     for (i in 1:(rep_length-1)) {
@@ -101,12 +118,35 @@ did_you_mean <- function(name, lastcall, problem, msg)
     lang <- get_language()
     dym_local <- dym_translate(lang=lang)    
     cat(paste0("\n", dym_local, suggested_args, "  ?\n"))
-    if (!is.null(lastcall)) {
-      lastcall <- space_scrub(lastcall)
-      better_call <- space_scrub(better_call)
-      topcall <- space_scrub(topcall)
-      suggestion <- substr_find_and_replace(lastcall,topcall,better_call) 
-      cat(paste0(suggestion, "\n"))
+
+    if (!is.null(lastcall) && topcall==lastcall) { # should not be empty, but just in case
+      # ... we'll attempt this only if there is no nesting
+
+      # get the wrong parameter names
+      wrong_params <- character()
+      for (i in 1:length(unused_args)) {
+        wrong_params[i] <- gsub(unused_args[i],pattern=" = .*",replace="")
+      }
+      
+      #get the suggested parameter names
+      right_params <- character()
+      for (i in 1:length(unused_args)) {
+        right_params[i] <- gsub(replacements[i],pattern=" = .*",replace="")
+      }
+      
+      #get new names for the list that is our call
+      lc_names <- names(lastcall)
+      for (i in 1:length(lastcall)) {
+        if (lc_names[i] %in% wrong_params) {
+          lc_names[i] <-right_params[which(wrong_params == lc_names[i])]
+        }
+      }
+      
+      suggested_call <- lastcall
+      names(suggested_call) <- lc_names
+      print(suggested_call)
+      cat("\n")
+      
     }
   
   # Note:  suggestion is not for copy-and-paste when some arguments are character string originally
@@ -124,7 +164,11 @@ did_you_mean <- function(name, lastcall, problem, msg)
   cat(paste0("\n", dym_local, word, "  ?\n"))
   if (!is.null(lastcall))
   {
-    cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
+    if (class(lastcall) == "call") {
+        call_text <- capture.output(print(lastcall))
+        cat(paste0(sub(x=call_text, pattern=name, replacement=word), "\n"))
+    } else cat(paste0(sub(x=lastcall, pattern=name, replacement=word), "\n"))
+  
   }
   
   return(invisible())

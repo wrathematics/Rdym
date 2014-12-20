@@ -16,25 +16,28 @@ find_unused_args <- function(msg) {
 
 find_replacement <- function(unused,topcall,with_namespace) {
   
-  tree <- capture.output(pryr::call_tree(parse(text=topcall)))
+  top_function_call <- as.character(topcall)[[1]]
+  
+#  tree <- capture.output(pryr::call_tree(parse(text=topcall)))
   
   # locate the function that was actually called in that top call, and 
   # find the names of its arguments
   if (with_namespace) {
       # it's the fifth element of the call_tree
-      function_branch <- tree[5]
-      error_function <- gsub(function_branch,pattern=".*`",replace="")
+      #function_branch <- tree[5]
+      #error_function <- gsub(function_branch,pattern=".*`",replace="")
       # we find the namespace here:
-      pkg <- tree[4]
-      pkg <- gsub(pkg,pattern=".*`",replace="")
+      #pkg <- tree[4]
+      #pkg <- gsub(pkg,pattern=".*`",replace="")
       # get those arguments:
-      call_to_do <- paste0("names(formals(",pkg,"::",error_function,"))")
+      #call_to_do <- paste0("names(formals(",pkg,"::",error_function,"))")
+      call_to_do <- paste0("names(formals(",top_function_call,"))")
       possible_arg_names <- eval(parse(text=call_to_do))
   } else {
     #no namespace so it's the second element of the tree
-    function_branch <- tree[2]
-    error_function <- gsub(function_branch,pattern=".*`",replace="")
-    possible_arg_names <- names(formals(error_function))
+    #function_branch <- tree[2]
+    #error_function <- gsub(function_branch,pattern=".*`",replace="")
+    possible_arg_names <- names(formals(top_function_call))
   }
 
   

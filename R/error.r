@@ -65,7 +65,8 @@ get_lastcall <- function(msg)
 
 stop_dym <- function()
 {
-  print(sys.calls())
+  ### Get the call stack:
+  call_stack <- sys.calls()
   
   ### Language support
   lang <- get_language()
