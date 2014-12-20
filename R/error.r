@@ -37,6 +37,7 @@ get_lastcall <- function(call_stack,msg)
   savehistory(Rhistfile)
   Rhist <- readLines(Rhistfile)
   unlink(Rhistfile)
+
   n <- length(Rhist)
   place <- n
   match <- FALSE
@@ -49,7 +50,7 @@ get_lastcall <- function(call_stack,msg)
     error <- function(e) geterrmessage()
     current_msg <- tryCatch(eval(parse(text=call_frag)), error=error)
     
-    msg_chop <- sub(msg,pattern="Error.*: ",replacement="")
+    msg_chop <- sub(msg,pattern=".*: ",replacement="")
     msg_chop <- sub(msg_chop,pattern="[[:space:]]$",replacement="")
     msg_chop <- sub(msg_chop,pattern="^[[:space:]]*",replacement="")
     if (current_msg == msg_chop) {
