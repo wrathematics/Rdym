@@ -21,5 +21,8 @@ structure(list(lang = c("de", "es", "fr", "it", "ja", "ko", "nn",
 "", "", " \u3092\u898b\u3064\u3051\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f ", 
 "\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4", 
 "", "", "", " fonksiyonu bulunamad\u0131", "\u8fd9\u4e2a\u51fd\u6570", 
-"", "")), .Names = c("lang", "obj_pre", "obj_post", "fun_pre", 
-"fun_post"), row.names = c(NA, -13L), class = "data.frame")
+"", ""), err = c("Fehler", "Error", "Erreur ", "Errore", " \u30a8\u30e9\u30fc", 
+"\uc5d0\ub7ec", "Feil", "B\u0141\u0104D", "\u041e\u0448\u0438\u0431\u043a\u0430", 
+"Hata", "\u9519\u8bef", "\u932f\u8aa4", "Error")), .Names = c("lang", 
+"obj_pre", "obj_post", "fun_pre", "fun_post", "err"), row.names = c(NA, 
+-13L), class = "data.frame")

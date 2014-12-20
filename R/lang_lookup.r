@@ -50,6 +50,16 @@ get_missing_fun <- function(lang)
 
 
 
+get_error_token <- function(lang)
+{
+  langrow <- get_langrow(lang=lang)
+  
+  err <- langtable$err[langrow]
+  return(err)
+}
+
+
+
 ### Taken from Google Translage; accuracy/coherence not guaranteed.
 dym_translate <- function(lang)
 {

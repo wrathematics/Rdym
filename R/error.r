@@ -23,7 +23,7 @@ scrub <- function(msg, pre, post)
 #try to get from history
 #this will fail if user enters more than one command per line
 #but if command is spread over multiple lines we are fine
-get_lastcall <- function(msg)
+get_lastcall <- function(msg, err)
 {
   backsearch_limit <- 10
   
@@ -43,9 +43,9 @@ get_lastcall <- function(msg)
     error <- function(e) geterrmessage()
     current_msg <- tryCatch(eval(parse(text=call_frag)), error=error)
     
-    msg_chop <- sub(msg,pattern="Error.*: ",replacement="")
-    msg_chop <- sub(msg_chop,pattern="[[:space:]]$",replacement="")
-    msg_chop <- sub(msg_chop,pattern="^[[:space:]]*",replacement="")
+    msg_chop <- sub(msg, pattern=paste0(err, ".*: "), replacement="", ignore.case=TRUE)
+    msg_chop <- sub(msg_chop, pattern="[[:space:]]$", replacement="")
+    msg_chop <- sub(msg_chop, pattern="^[[:space:]]*", replacement="")
     if (current_msg == msg_chop) {
       match <- TRUE 
     }
@@ -73,7 +73,8 @@ stop_dym <- function()
   missing_obj <- get_missing_obj(lang)
   
   msg <- geterrmessage()
-  lastcall <- get_lastcall(msg)
+  err <- get_error_token(lang=lang)
+  lastcall <- get_lastcall(msg=msg, err=err)
   
   
   if (matcherr(msg=msg, pattern=missing_fun))

@@ -23,13 +23,14 @@ langtable <- data.frame(
   obj_post=character(len),
   fun_pre=character(len),
   fun_post=character(len), 
+  err=character(len),
   stringsAsFactors=FALSE
 )
 
 
-prepost <- function(text, x)
+prepost <- function(text, pattern)
 {
-  x <- text[which(grepl(x=text, pattern=x)) + 1]
+  x <- text[which(grepl(x=text, pattern=pattern)) + 1]
   x <- sub(x=x, pattern="msgstr ", replacement="")
   x <- gsub(x=x, pattern=quote_hell, replacement="")
   x <- unlist(strsplit(x=x, split="%s"))
@@ -42,8 +43,12 @@ for (i in 1:len)
   file <- files[i]
   text <- readLines(paste0(pofiles, "/", file))
   
-  missing_obj_local <- prepost(text=text, x=missing_obj)
-  missing_fun_local <- prepost(text=text, x=missing_fun)
+  missing_obj_local <- prepost(text=text, pattern=missing_obj)
+  missing_fun_local <- prepost(text=text, pattern=missing_fun)
+  
+  err <- prepost(text=text, pattern="msgid \"Error: \"")
+  if (length(err) == 0) err <- "Error"
+  err <- gsub(x=err, pattern=":.*$", replacement="")
   
   ### R can't read text correctly; I'm literally furious right now.
   if (file == "es.po")
@@ -54,6 +59,7 @@ for (i in 1:len)
   langtable$obj_post[i] <- missing_obj_local[2]
   langtable$fun_pre[i] <- missing_fun_local[1]
   langtable$fun_post[i] <- missing_fun_local[2] 
+  langtable$err[i] <- err
 }
 
 delete <- ( is.na(langtable$obj_pre) & is.na(langtable$obj_post) ) | 
@@ -68,7 +74,7 @@ for (j in 1:ncol(langtable)){
 }
 
 
-langtable[nrow(langtable)+1, ] <- c("en", "object", "not found", "could not find function", "")
+langtable[nrow(langtable)+1, ] <- c("en", "object", "not found", "could not find function", "", "Error")
 rownames(langtable) <- NULL
 
 
