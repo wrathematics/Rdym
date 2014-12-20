@@ -88,9 +88,11 @@ did_you_mean <- function(name, lastcall, problem, msg)
     }
     
    suggested_args <- character()
-   for (i in 1:(rep_length-1)) {
-     suggested_args <- paste0(suggested_args,replacements[i],", ")
-   }
+   if (rep_length > 1) {
+    for (i in 1:(rep_length-1)) {
+      suggested_args <- paste0(suggested_args,replacements[i],", ")
+    }
+  }
    suggested_args <- paste0(suggested_args,replacements[rep_length])
     
     # perform console output (sorry, cannot use procedure common to the
@@ -106,6 +108,9 @@ did_you_mean <- function(name, lastcall, problem, msg)
       suggestion <- substr_find_and_replace(lastcall,topcall,better_call) 
       cat(paste0(suggestion, "\n"))
     }
+  
+  # Note:  suggestion is not for copy-and-paste when some arguments are character string originally
+  # with spaces
 
     return(invisible())
      
