@@ -109,13 +109,13 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
       # get the wrong parameter names
       wrong_params <- character()
       for (i in 1:length(unused_args)) {
-        wrong_params[i] <- gsub(unused_args[i],pattern=" = .*",replace="")
+        wrong_params[i] <- gsub(unused_args[i],pattern=" = .*",replacement="")
       }
       
       #get the suggested parameter names
       right_params <- character()
       for (i in 1:length(unused_args)) {
-        right_params[i] <- gsub(replacements[i],pattern=" = .*",replace="")
+        right_params[i] <- gsub(replacements[i],pattern=" = .*",replacement="")
       }
       
       #get new names for the list that is our call

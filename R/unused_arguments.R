@@ -3,10 +3,10 @@
 ##################################################################
 
 find_unused_args <- function(msg) {  
-  temp <- sub(msg,pattern="Error.*unused argument(s?) ",replace="")
-  temp <- sub(temp,pattern="\\(",replace="")
-  temp <- sub(temp,pattern="\\)",replace="")
-  temp <- sub(temp,pattern="\\n",replace="")
+  temp <- sub(msg,pattern="Error.*unused argument(s?) ",replacement="")
+  temp <- sub(temp,pattern="\\(",replacement="")
+  temp <- sub(temp,pattern="\\)",replacement="")
+  temp <- sub(temp,pattern="\\n",replacement="")
   unlist(strsplit(temp,split=", ")) 
   # Homer TODO:  really learn regular expressions in R!
   # Also:  use of English, here.  Perhaps worth writing a parenthesis-matching
@@ -26,9 +26,9 @@ find_replacement <- function(unused,topcall,with_namespace) {
   }
 
   #isolate the erroneous parameter name:
-  unused_param <- sub(unused,pattern=" =.*",replace="")
+  unused_param <- sub(unused,pattern=" =.*",replacement="")
   closest <- find_closest_word(unused_param, possible_arg_names)
-  better_argument <- sub(unused,pattern=unused_param,replace=closest$word)
+  better_argument <- sub(unused,pattern=unused_param,replacement=closest$word)
   better_argument
   
 } # end find_replacment
@@ -37,7 +37,7 @@ find_replacement <- function(unused,topcall,with_namespace) {
 
 # sometimes you just gotta remove spaces (but we may no longer need this)
 space_scrub <- function(str) {
-  gsub(str,pattern="[[:blank:]]",replace="")
+  gsub(str,pattern="[[:blank:]]",replacement="")
 }
 
 
