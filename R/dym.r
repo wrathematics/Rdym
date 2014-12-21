@@ -18,18 +18,13 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     
     # in order to make suggested code, take a risk and get lastcall
     # from history:
-    
     lastcall <- get_lastcall(call_stack=1,msg)
     
   }
   else if (problem == "not_exported")
   {
     
-#     msg_frag <- sub(x=msg, pattern=".*namespace:", replacement="")
-#     pkg <- sub(x=msg_frag, pattern="'", replacement="")
-#     pkg <- sub(x=pkg,pattern="[[:space:]]$", replacement="")
-
-    # last call
+    # use the last call to recover package name and alleged function name
     pkg <- as.character(as.list(lastcall)[[2]]) # gets the package
     name <- as.character(as.list(lastcall)[[3]]) # gets the alleged function
 
@@ -48,16 +43,12 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
 
     # in order to make suggested code, take a risk and get lastcall
     # from history:
-
     lastcall <- get_lastcall(call_stack=1,msg)
 
   }
   else if (problem == "object")
   {
-    #expr <- parse(text=lastcall)
-    #objs <- process_ast(capture.output(do.call(pryr::call_tree, list(expr))))
-    
-    
+       
     objs <- lapply(search(), objects)
     objs <- unique(c(ls(), do.call(c, objs)))
     
@@ -78,34 +69,10 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
   }
   else if (problem == "unused_arguments") {
     
-    ### Easier now to find topcall now (see the anxious discussion below)
+    ### find the call that gnerated the error:
     cs_length <- length(call_stack)
     topcall <- call_stack[[cs_length - 1]]
-    # stop_dym is the last call in this list
-    
-    
-    # we need to recover the top call in the stack.  .Traceback won't give
-    # the current stack, because the error is still being "handled".
-    # fortunately R mentions the top call in the error message.
-    #Let's isolate it:
-#     temp <- sub(msg,pattern="Error in ",replace="")
-#     topcall <- sub(temp,pattern=" : .*",replace="")
-    #Question:  does this use of sub give problems in other languages?
-    
-    #Problem: if the top call is very long, then the above returns only an
-    #initial substring of it.  This will happen frequently in complex graphics
-    # functions, where arguments give titles, axis labels, etc.
-    #To hedge against this possibility:
-    
-#     topcall <- space_scrub(topcall)
-#     lastcall <- space_scrub(lastcall)
-#     tc_length <- nchar(topcall)
-#     if ((substr(lastcall,1,tc_length))==topcall) { #topcall probably is original call
-#       topcall <- lastcall
-#     }
-    
-    # Still this could blow up if calls are nested and topcall is long
-    
+    # stop_dym is the last call in call_stack
     
     
     # recover the unused argument(s) from the error message:
@@ -128,10 +95,10 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     }
   }
    suggested_args <- paste0(suggested_args,replacements[rep_length])
-    
+
+  
     # perform console output (sorry, cannot use procedure common to the
-    # other errors)
-    
+    # other errors)    
     lang <- get_language()
     dym_local <- dym_translate(lang=lang)    
     cat(paste0("\n", dym_local, suggested_args, "  ?\n"))
@@ -165,10 +132,6 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
       cat("\n")
       
     }
-  
-  # Note:  suggestion is not for copy-and-paste when some arguments are character string originally
-  # with spaces
-
     return(invisible())
      
   }

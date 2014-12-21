@@ -16,9 +16,7 @@ scrub <- function(msg, pre, post)
 
 
 
-#try to get from history
-#this will fail if user enters more than one command per line
-#but if command is spread over multiple lines we are fine
+
 get_lastcall <- function(call_stack,msg)
 {
   # the lst item in the call stack is the code for stop_dym
@@ -26,7 +24,8 @@ get_lastcall <- function(call_stack,msg)
   #no guesswork with R history
   if (length(call_stack) > 1) return(call_stack[[1]])
   
-  
+  # guess from R history; this could fail if user enter multiple commands on a single line
+  # but probability is low, I think
   backsearch_limit <- 10
   
   Rhistfile <- tempfile(".Rhistory")
@@ -65,7 +64,7 @@ get_lastcall <- function(call_stack,msg)
 
 stop_dym <- function()
 {
-  ### Get the call stack:
+  ### Get the call stack (will always contain at least the call for stop_dym)
   call_stack <- sys.calls()
   
   ### Language support
