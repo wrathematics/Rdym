@@ -2,19 +2,20 @@ Package: Rdym
 License: BSD 2-clause License + file LICENSE
 Version: 0.3.0
 Title: A "did you mean?" utilitiy for R.
-Description: Most search engines have a "did you mean?" feature, where 
-  suggestions are given in the presence of likely typos.  The Rdym package
-  somewhat replicates this functionality with ancient spellchecker techniques.
-  When R detects that a function or object listed in the user's input is not 
-  found, the package finds the minimum Levenshtein distance between the 
-  "unfound" token and all symbols in the user's global environment plus all 
-  loaded namespaces.  The word with minimum Levenshtein distance (in the event
-  of ties, the first such detected) is then suggested as an alternative to the
-  missing symbol.
+Description: Most search engines have a "did you mean?" feature, where
+    suggestions are given in the presence of likely typos.  The Rdym package
+    somewhat replicates this functionality with ancient spellchecker techniques.
+    When R detects that a function or object listed in the user's input is not
+    found, the package finds the minimum Levenshtein distance between the
+    "unfound" token and all symbols in the user's global environment plus all
+    loaded namespaces.  The word with minimum Levenshtein distance (in the event
+    of ties, the first such detected) is then suggested as an alternative to the
+    missing symbol.
 ByteCompile: yes
 NeedsCompilation: yes
-Depends: R (>= 2.14.0)
-Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), 
-  email = "wrathematics@gmail.com"), person("Homer", "White", 
-  role="aut", email="hwhite0@georgetowncollege.edu"))
+Depends:
+    R (>= 2.14.0)
+Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"),
+    email = "wrathematics@gmail.com"), person("Homer", "White",
+    role="aut", email="hwhite0@georgetowncollege.edu"))
 Maintainer: Drew Schmidt <wrathematics@gmail.com>
