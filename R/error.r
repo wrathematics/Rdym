@@ -4,10 +4,6 @@ matcherr <- function(msg, pattern)
 }
 
 
-# TODO in this function:  correctly handle "is not an exported object from"
-# Also, problem in simpleFind:  when you use pckg::func() and mess up inside,
-# simpleFind makes wrong choice about what cannot be found
-
 scrub <- function(msg, pre, post)
 {
   if (pre != "") fun <- sub(x=msg, pattern=paste0(".*", pre), replacement="")
@@ -42,14 +38,11 @@ get_lastcall <- function(call_stack,msg)
   place <- n
   match <- FALSE
   call_frag <- Rhist[n]
-  safety <- 0 #count up to sanity_limit
+  safety <- 0 #count up to backsearch_limit
   while (!match && safety <= backsearch_limit) {
-    
-    #oddly, the following fails with text: "mean(NULL)",
-    #but it works fine from console
+
     error <- function(e) geterrmessage()
     current_msg <- tryCatch(eval(parse(text=call_frag)), error=error)
-    
     msg_chop <- sub(msg,pattern=".*: ",replacement="")
     msg_chop <- sub(msg_chop,pattern="[[:space:]]$",replacement="")
     msg_chop <- sub(msg_chop,pattern="^[[:space:]]*",replacement="")
@@ -95,12 +88,12 @@ stop_dym <- function()
     fun <- scrub(msg=msg, pre=pre, post=post)
     did_you_mean(fun, lastcall, problem="function", msg, call_stack)
   }
-  else if (matcherr(msg=msg, pattern="is not an exported object from")) # TODO
+  else if (matcherr(msg=msg, pattern="is not an exported object from"))
   {
     notExported <- sub(x=msg, pattern="Error: ", replacement="")
     notExported <- sub(x=notExported, pattern=" is not an exported object from.*", replacement="")
     notExported <- gsub(x=notExported, pattern="'", replacement="")
-    did_you_mean(notExported, lastcall,problem="not_exported",msg, call_stack)
+    did_you_mean(notExported,lastcall,problem="not_exported",msg, call_stack)
   }
   else if (matcherr(msg=msg, pattern=missing_obj))
   {

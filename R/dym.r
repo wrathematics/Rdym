@@ -54,8 +54,25 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
   }
   else if (problem == "object")
   {
-    expr <- parse(text=lastcall)
-    objs <- process_ast(capture.output(do.call(pryr::call_tree, list(expr))))
+    #expr <- parse(text=lastcall)
+    #objs <- process_ast(capture.output(do.call(pryr::call_tree, list(expr))))
+    
+    
+    objs <- lapply(search(), objects)
+    objs <- unique(c(ls(), do.call(c, objs)))
+    
+    possible_containers <- cull_calls(call_stack)
+    
+    #add on the objects contained in the valid containers:
+    add_on <- function(x) {
+      tryCatch(suppressWarnings(objects(eval(parse(text=x)))),
+               error=function(e){
+                 return(NULL)
+               })
+    }
+    new_objs <- lapply(possible_containers,add_on)
+    objs <- unique(c(do.call(c,new_objs),objs))
+    
     closest <- find_closest_word(name, objs)
     word <- closest$word
   }

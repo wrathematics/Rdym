@@ -39,4 +39,27 @@ process_ast <- function (ast_output) {
   return(objs)
 }
 
+##############
+## Try combing through the entire call stack for names
+######################
+
+get_names <- function(call) {
+  call <- as.list(call)
+  give_name <- function(x) {
+    if (is.name(x)) return(as.character(x)) else return("")
+  }
+  results <- sapply(call,give_name)
+  results[results != ""]
+}
+
+cull_calls <- function(call_stack) {
+  
+  n <- length(call_stack)-1
+  name_roster <- character()
+  for (i in 1:n) {
+    name_roster <- c(name_roster,get_names(call_stack[[i]]))
+  }
+  name_roster
+}
+
 
