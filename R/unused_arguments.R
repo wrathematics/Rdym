@@ -8,7 +8,9 @@ find_unused_args <- function(msg) {
   temp <- sub(temp,pattern="\\)",replace="")
   temp <- sub(temp,pattern="\\n",replace="")
   unlist(strsplit(temp,split=", ")) 
-  # Homer TODO:  really learn regular expressions in R! 
+  # Homer TODO:  really learn regular expressions in R!
+  # Also:  use of English, here.  Perhaps worth writing a parenthesis-matching
+  #routine to pull out the unused arguments
 }
 
 
