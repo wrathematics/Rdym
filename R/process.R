@@ -53,11 +53,13 @@ get_names <- function(call) {
 }
 
 cull_calls <- function(call_stack) {
+  n <- length(call_stack) - 1
+  if (n == 0) n <- 1L # In basic case, attempts to iterate over index 1:0
   
-  n <- length(call_stack)-1
   name_roster <- character()
+  
   for (i in 1:n) {
-    name_roster <- c(name_roster,get_names(call_stack[[i]]))
+    name_roster <- c(name_roster, get_names(call_stack[[i]]))
   }
   name_roster
 }

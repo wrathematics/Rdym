@@ -12,7 +12,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
   }
   else if (problem=="package") 
   {
-    objs <- installed.packages()[,"Package"]
+    objs <- installed.packages()[, "Package"]
     closest <- find_closest_word(name, objs)
     word <- closest$word
     
@@ -23,7 +23,6 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
   }
   else if (problem == "not_exported")
   {
-    
     # use the last call to recover package name and alleged function name
     pkg <- as.character(as.list(lastcall)[[2]]) # gets the package
     name <- as.character(as.list(lastcall)[[3]]) # gets the alleged function
@@ -48,7 +47,6 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
   }
   else if (problem == "object")
   {
-       
     objs <- lapply(search(), objects)
     objs <- unique(c(ls(), do.call(c, objs)))
     
@@ -61,14 +59,14 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
                  return(NULL)
                })
     }
-    new_objs <- lapply(possible_containers,add_on)
-    objs <- unique(c(do.call(c,new_objs),objs))
+    new_objs <- lapply(possible_containers, add_on)
+    objs <- unique(c(do.call(c, new_objs), objs))
     
     closest <- find_closest_word(name, objs)
     word <- closest$word
   }
-  else if (problem == "unused_arguments") {
-    
+  else if (problem == "unused_arguments")
+  {
     ### find the call that gnerated the error:
     cs_length <- length(call_stack)
     topcall <- call_stack[[cs_length - 1]]
@@ -87,25 +85,25 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     replacements <- sapply(unused_args,find_replacement,topcall=topcall,
                            with_namespace=with_namespace)
     
-   rep_length <- length(replacements)
-   suggested_args <- character()
-   if (rep_length > 1) {
-    for (i in 1:(rep_length-1)) {
-      suggested_args <- paste0(suggested_args,replacements[i],", ")
+    rep_length <- length(replacements)
+    suggested_args <- character()
+    if (rep_length > 1) {
+      for (i in 1:(rep_length-1)) {
+        suggested_args <- paste0(suggested_args,replacements[i],", ")
+      }
     }
-  }
    suggested_args <- paste0(suggested_args,replacements[rep_length])
-
-  
+    
+    
     # perform console output (sorry, cannot use procedure common to the
     # other errors)    
     lang <- get_language()
     dym_local <- dym_translate(lang=lang)    
     cat(paste0("\n", dym_local, suggested_args, "  ?\n"))
-
+    
     if (!is.null(lastcall) && topcall==lastcall) { # should not be empty, but just in case
       # ... we'll attempt this only if there is no nesting
-
+      
       # get the wrong parameter names
       wrong_params <- character()
       for (i in 1:length(unused_args)) {
@@ -132,8 +130,8 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
       cat("\n")
       
     }
+    
     return(invisible())
-     
   }
   
   #the following applies to errors other than unused arguments:
