@@ -52,7 +52,7 @@ get_lastcall <- function(call_stack, msg, err_token)
       else {
       place <- place - 1
       safety <- safety + 1
-      call_frag <- paste0(Rhist[place],call_frag)
+      call_frag <- paste0(Rhist[place], call_frag)
     }
   }
   if (match == FALSE) 
@@ -113,14 +113,14 @@ stop_dym <- function()
   {
     pack <- sub(x=msg, pattern=".*there is no package called ", replacement="")
     pack <- sub(x=pack, pattern="\\n", replacement="")
-    pack <- gsub(pack,pattern="[[:punct:]]",replacement="")
-    did_you_mean(pack, lastcall,problem="package", msg, call_stack)
+    pack <- gsub(pack, pattern="[[:punct:]]", replacement="")
+    did_you_mean(pack, lastcall, problem="package", msg, call_stack)
   }
   ### unused argument
   else if (matcherr(msg=msg, pattern="unused argument(?s)"))
   {  
     # best to work on problematic tokens in dym.R, so put placeholder for name
-    did_you_mean(name="placeholder",lastcall,problem="unused_arguments",msg, call_stack)
+    did_you_mean(name="placeholder", lastcall, problem="unused_arguments", msg, call_stack)
   }
   
   invisible()

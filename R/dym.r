@@ -18,7 +18,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     
     # in order to make suggested code, take a risk and get lastcall
     # from history:
-    lastcall <- get_lastcall(call_stack=1,msg)
+    lastcall <- get_lastcall(call_stack=1, msg)
     
   }
   else if (problem == "not_exported")
@@ -27,7 +27,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     pkg <- as.character(as.list(lastcall)[[2]]) # gets the package
     name <- as.character(as.list(lastcall)[[3]]) # gets the alleged function
 
-    package_title <- paste0("package:",pkg)
+    package_title <- paste0("package:", pkg)
     if (package_title %in% search()) {
       objs <- objects(paste0("package:", pkg))
     } else { #package not attached
@@ -42,7 +42,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
 
     # in order to make suggested code, take a risk and get lastcall
     # from history:
-    lastcall <- get_lastcall(call_stack=1,msg)
+    lastcall <- get_lastcall(call_stack=1, msg)
 
   }
   else if (problem == "object")
@@ -54,7 +54,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     
     #add on the objects contained in the valid containers:
     add_on <- function(x) {
-      tryCatch(suppressWarnings(objects(eval(parse(text=x)))),
+      tryCatch(suppressWarnings(objects(eval(parse(text=x)))), 
                error=function(e){
                  return(NULL)
                })
@@ -79,20 +79,20 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     #see if a namespace is involved in the topcall:
     top_func_call <- as.character(topcall)[[1]]
 
-    with_namespace <- length(grep(top_func_call,pattern="::")) > 0
+    with_namespace <- length(grep(top_func_call, pattern="::")) > 0
     
     # for each unused argument, find a suggested replacement:
-    replacements <- sapply(unused_args,find_replacement,topcall=topcall,
+    replacements <- sapply(unused_args, find_replacement, topcall=topcall, 
                            with_namespace=with_namespace)
     
     rep_length <- length(replacements)
     suggested_args <- character()
     if (rep_length > 1) {
       for (i in 1:(rep_length-1)) {
-        suggested_args <- paste0(suggested_args,replacements[i],", ")
+        suggested_args <- paste0(suggested_args, replacements[i], ", ")
       }
     }
-   suggested_args <- paste0(suggested_args,replacements[rep_length])
+   suggested_args <- paste0(suggested_args, replacements[rep_length])
     
     
     # perform console output (sorry, cannot use procedure common to the
@@ -107,13 +107,13 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
       # get the wrong parameter names
       wrong_params <- character()
       for (i in 1:length(unused_args)) {
-        wrong_params[i] <- gsub(unused_args[i],pattern=" = .*",replacement="")
+        wrong_params[i] <- gsub(unused_args[i], pattern=" = .*", replacement="")
       }
       
       #get the suggested parameter names
       right_params <- character()
       for (i in 1:length(unused_args)) {
-        right_params[i] <- gsub(replacements[i],pattern=" = .*",replacement="")
+        right_params[i] <- gsub(replacements[i], pattern=" = .*", replacement="")
       }
       
       #get new names for the list that is our call
