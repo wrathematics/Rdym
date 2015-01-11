@@ -14,8 +14,7 @@ Description: Most search engines have a "did you mean?" feature, where
 ByteCompile: yes
 NeedsCompilation: yes
 Depends:
-    R (>= 2.14.0),
-    pryr
+    R (>= 2.14.0)
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"),
     email = "wrathematics@gmail.com"), person("Homer", "White",
     role="aut", email="hwhite0@georgetowncollege.edu"))

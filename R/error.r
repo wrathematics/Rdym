@@ -4,10 +4,6 @@ matcherr <- function(msg, pattern)
 }
 
 
-# TODO in this function:  correctly handle "is not an exported object from"
-# Also, problem in simpleFind:  when you use pckg::func() and mess up inside,
-# simpleFind makes wrong choice about what cannot be found
-
 scrub <- function(msg, pre, post)
 {
   if (pre != "") fun <- sub(x=msg, pattern=paste0(".*", pre), replacement="")
@@ -20,32 +16,36 @@ scrub <- function(msg, pre, post)
 
 
 
-#try to get from history
-#this will fail if user enters more than one command per line
-#but if command is spread over multiple lines we are fine
-get_lastcall <- function(msg, err)
+get_lastcall <- function(call_stack, msg, err_token)
 {
+  # the lst item in the call stack is the code for stop_dym
+  #if call stack has length greater thne one, then we can get the last call from the stack:
+  #no guesswork with R history
+  if (length(call_stack) > 1) return(call_stack[[1]])
+  
+  # guess from R history; this could fail if user enter multiple commands on a single line
+  # but probability is low, I think
   backsearch_limit <- 10
   
   Rhistfile <- tempfile(".Rhistory")
   savehistory(Rhistfile)
   Rhist <- readLines(Rhistfile)
   unlink(Rhistfile)
+
   n <- length(Rhist)
   place <- n
   match <- FALSE
   call_frag <- Rhist[n]
-  safety <- 0 #count up to sanity_limit
+  safety <- 0 #count up to backsearch_limit
   while (!match && safety <= backsearch_limit) {
-    
-    #oddly, the following fails with text: "mean(NULL)",
-    #but it works fine from console
+  
     error <- function(e) geterrmessage()
     current_msg <- tryCatch(eval(parse(text=call_frag)), error=error)
     
-    msg_chop <- sub(msg, pattern=paste0(err, ".*: "), replacement="", ignore.case=TRUE)
+    msg_chop <- sub(msg, pattern=paste0(err_token, ".*: "), replacement="", ignore.case=TRUE)
     msg_chop <- sub(msg_chop, pattern="[[:space:]]$", replacement="")
     msg_chop <- sub(msg_chop, pattern="^[[:space:]]*", replacement="")
+    
     if (current_msg == msg_chop) {
       match <- TRUE 
     }
@@ -65,6 +65,9 @@ get_lastcall <- function(msg, err)
 
 stop_dym <- function()
 {
+  ### Get the call stack (will always contain at least the call for stop_dym)
+  call_stack <- sys.calls()
+  
   ### Language support
   lang <- get_language()
   check_lang(lang)
@@ -73,10 +76,11 @@ stop_dym <- function()
   missing_obj <- get_missing_obj(lang)
   
   msg <- geterrmessage()
-  err <- get_error_token(lang=lang)
-  lastcall <- get_lastcall(msg=msg, err=err)
+  err_token <- get_error_token(lang=lang)
+  lastcall <- get_lastcall(call_stack, msg, err_token)
   
   
+  ### "could not find function"
   if (matcherr(msg=msg, pattern=missing_fun))
   {
     langrow <- get_langrow(lang=lang)
@@ -84,15 +88,17 @@ stop_dym <- function()
     post <- langtable$fun_post[langrow]
     
     fun <- scrub(msg=msg, pre=pre, post=post)
-    did_you_mean(fun, lastcall, problem="function", msg)
+    did_you_mean(fun, lastcall, problem="function", msg, call_stack)
   }
-  else if (matcherr(msg=msg, pattern="is not an exported object from")) # TODO
+  ### "is not an exported object from"
+  else if (matcherr(msg=msg, pattern="is not an exported object from"))
   {
     notExported <- sub(x=msg, pattern="Error: ", replacement="")
     notExported <- sub(x=notExported, pattern=" is not an exported object from.*", replacement="")
     notExported <- gsub(x=notExported, pattern="'", replacement="")
-    did_you_mean(notExported, lastcall,problem="not_exported",msg)
+    did_you_mean(notExported, lastcall, problem="not_exported", msg, call_stack)
   }
+  ### "object %s not found"
   else if (matcherr(msg=msg, pattern=missing_obj))
   {
     langrow <- get_langrow(lang=lang)
@@ -100,19 +106,21 @@ stop_dym <- function()
     post <- langtable$obj_post[langrow]
     
     obj <- scrub(msg=msg, pre=pre, post=post)
-    did_you_mean(obj, lastcall, problem="object", msg)
+    did_you_mean(obj, lastcall, problem="object", msg, call_stack)
   }
+  ### "there is no package called"
   else if (matcherr(msg=msg, pattern="there is no package called"))
   {
     pack <- sub(x=msg, pattern=".*there is no package called ", replacement="")
     pack <- sub(x=pack, pattern="\\n", replacement="")
     pack <- gsub(pack,pattern="[[:punct:]]",replacement="")
-    did_you_mean(pack, lastcall,problem="package",msg)
+    did_you_mean(pack, lastcall,problem="package", msg, call_stack)
   }
-  
-  if (matcherr(msg=msg, pattern="unused argument(?s)"))
-  {
-    #TODO
+  ### unused argument
+  else if (matcherr(msg=msg, pattern="unused argument(?s)"))
+  {  
+    # best to work on problematic tokens in dym.R, so put placeholder for name
+    did_you_mean(name="placeholder",lastcall,problem="unused_arguments",msg, call_stack)
   }
   
   invisible()
