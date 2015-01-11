@@ -18,7 +18,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
     
     # in order to make suggested code, take a risk and get lastcall
     # from history:
-    lastcall <- get_lastcall(call_stack=1, msg)
+    lastcall <- get_lastcall(call_stack=1, msg, "Error:") #FIXME
     
   }
   else if (problem == "not_exported")
@@ -42,7 +42,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
 
     # in order to make suggested code, take a risk and get lastcall
     # from history:
-    lastcall <- get_lastcall(call_stack=1, msg)
+    lastcall <- get_lastcall(call_stack=1, msg, "Error:") #FIXME
 
   }
   else if (problem == "object")
