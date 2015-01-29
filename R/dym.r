@@ -3,7 +3,8 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
   name <- sub(x=name, pattern="\\n", replacement="")
   
   
-  if (problem == "function") {
+  if (problem == "function")
+  {
     #make the basic objects list:
     objs <- lapply(search(), objects)
     objs <- unique(c(ls(), do.call(c, objs)))
@@ -92,7 +93,7 @@ did_you_mean <- function(name, lastcall, problem, msg, call_stack)
         suggested_args <- paste0(suggested_args, replacements[i], ", ")
       }
     }
-   suggested_args <- paste0(suggested_args, replacements[rep_length])
+    suggested_args <- paste0(suggested_args, replacements[rep_length])
     
     
     # perform console output (sorry, cannot use procedure common to the
