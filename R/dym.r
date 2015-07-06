@@ -145,7 +145,7 @@ dym_unused <- function(name, lastcall, problem, msg, call_stack)
     names(suggested_call) <- lc_names
   }
   
-  suggested_call <- capture.output(suggested_call)
+  suggested_call <- utils::capture.output(suggested_call)
   
   return(list(suggestion=suggestion, lastcall=suggested_call))
 }
