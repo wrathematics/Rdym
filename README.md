@@ -2,7 +2,6 @@
 
 * **Version:** 0.3.1
 * **Status:** [![Build Status](https://travis-ci.org/wrathematics/Rdym.png)](https://travis-ci.org/wrathematics/Rdym) 
-* **License:** [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-orange.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
 * **License:** [![License](http://img.shields.io/badge/license-BSD%202--Clause-orange.svg?style=flat)](http://opensource.org/licenses/BSD-2-Clause)
 * **Authors:** Drew Schmidt and Homer White
 
