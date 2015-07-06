@@ -16,6 +16,13 @@ scrub <- function(msg, pre, post)
 
 
 
+removechar <- function(char, str)
+{
+  gsub(str, pattern=char, replacement="")
+}
+
+
+
 get_lastcall <- function(call_stack, msg, err_token)
 {
   # the lst item in the call stack is the code for stop_dym
@@ -28,7 +35,7 @@ get_lastcall <- function(call_stack, msg, err_token)
   backsearch_limit <- 10
   
   Rhistfile <- tempfile(".Rhistory")
-  savehistory(Rhistfile)
+  utils::savehistory(Rhistfile)
   Rhist <- readLines(Rhistfile)
   unlink(Rhistfile)
 
@@ -37,8 +44,8 @@ get_lastcall <- function(call_stack, msg, err_token)
   match <- FALSE
   call_frag <- Rhist[n]
   safety <- 0 #count up to backsearch_limit
-  while (!match && safety <= backsearch_limit) {
-  
+  while (!match && safety <= backsearch_limit)
+  {
     error <- function(e) geterrmessage()
     current_msg <- tryCatch(eval(parse(text=call_frag)), error=error)
     
@@ -46,15 +53,16 @@ get_lastcall <- function(call_stack, msg, err_token)
     msg_chop <- sub(msg_chop, pattern="[[:space:]]$", replacement="")
     msg_chop <- sub(msg_chop, pattern="^[[:space:]]*", replacement="")
     
-    if (current_msg == msg_chop) {
+    if (current_msg == msg_chop)
       match <- TRUE 
-    }
-      else {
+    else
+    {
       place <- place - 1
       safety <- safety + 1
       call_frag <- paste0(Rhist[place], call_frag)
     }
   }
+  
   if (match == FALSE) 
     return(NULL) 
   else
@@ -88,14 +96,16 @@ stop_dym <- function()
     post <- langtable$fun_post[langrow]
     
     fun <- scrub(msg=msg, pre=pre, post=post)
+    
     did_you_mean(fun, lastcall, problem="function", msg, call_stack)
   }
   ### "is not an exported object from"
-  else if (matcherr(msg=msg, pattern="is not an exported object from"))
+  else if (matcherr(msg=msg, pattern="is not an exported object from")) #FIXME language
   {
     notExported <- sub(x=msg, pattern="Error: ", replacement="")
     notExported <- sub(x=notExported, pattern=" is not an exported object from.*", replacement="")
     notExported <- gsub(x=notExported, pattern="'", replacement="")
+    
     did_you_mean(notExported, lastcall, problem="not_exported", msg, call_stack)
   }
   ### "object %s not found"
@@ -106,14 +116,21 @@ stop_dym <- function()
     post <- langtable$obj_post[langrow]
     
     obj <- scrub(msg=msg, pre=pre, post=post)
+    
     did_you_mean(obj, lastcall, problem="object", msg, call_stack)
   }
   ### "there is no package called"
-  else if (matcherr(msg=msg, pattern="there is no package called"))
+  else if (matcherr(msg=msg, pattern="there is no package called"))  #FIXME language
   {
     pack <- sub(x=msg, pattern=".*there is no package called ", replacement="")
     pack <- sub(x=pack, pattern="\\n", replacement="")
-    pack <- gsub(pack, pattern="[[:punct:]]", replacement="")
+    
+    alphanum <- c(letters, LETTERS)
+    c <- substr(pack, 1, 1)
+    if (!(c %in% alphanum)) pack <- removechar(c, pack)
+    c <- substr(pack, nchar(pack), nchar(pack))
+    if (!(c %in% alphanum)) pack <- removechar(c, pack)
+    
     did_you_mean(pack, lastcall, problem="package", msg, call_stack)
   }
   ### unused argument

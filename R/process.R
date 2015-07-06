@@ -54,7 +54,8 @@ get_names <- function(call) {
 
 cull_calls <- function(call_stack) {
   n <- length(call_stack) - 1
-  if (n == 0) n <- 1L # In basic case, attempts to iterate over index 1:0
+  if (n == 0)
+    n <- 1L # In basic case, attempts to iterate over index 1:0
   
   name_roster <- character()
   
