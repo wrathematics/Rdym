@@ -94,6 +94,7 @@ int did_you_mean(const char *input, const char **words, const int nwords, char *
   int least_dist = -1;
   int closest_word;
   int dist;
+  int wordlen;
   
   for (i=0; i<nwords; i++)
   {
@@ -114,10 +115,11 @@ int did_you_mean(const char *input, const char **words, const int nwords, char *
   }
   
   
-  word = malloc(strlen(words[least_dist]) * sizeof(*word));
+  wordlen = strlen(words[closest_word]);
+  word = malloc(wordlen * sizeof(*word));
   
-  for (i=0; i<strlen(words[i]); i++)
-    (*word)[i] = (words[least_dist])[i];
+  for (i=0; i<wordlen; i++)
+    (*word)[i] = (words[closest_word])[i];
   
   return least_dist;
 }

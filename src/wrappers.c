@@ -50,11 +50,19 @@ SEXP R_levenshtein_dist(SEXP s, SEXP t)
 SEXP R_find_closest_word(SEXP input, SEXP words)
 {
   int i;
-  int least_dist;
+  int least_dist = -1;
   int closest_word, current_dist;
-  const int nwords = LENGTH(words);
+  const unsigned int nwords = LENGTH(words);
   
   SEXP ret, ret_names, dist, word;
+  
+  if (nwords == 0)
+  {
+    PROTECT(ret = allocVector(INTSXP, 1));
+    INTEGER(ret)[0] = -1;
+    return ret;
+  }
+  
   PROTECT(dist = allocVector(INTSXP, 1));
   
   ldint_t *v0, *v1;
@@ -86,7 +94,7 @@ SEXP R_find_closest_word(SEXP input, SEXP words)
   free(v0);
   free(v1);
   
-  INT(dist) = current_dist;
+  INT(dist) = least_dist;
   
   PROTECT(word = allocVector(STRSXP, 1));
   SET_STRING_ELT(word, 0, mkChar(CHARPT(words, closest_word)));
