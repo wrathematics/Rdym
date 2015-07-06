@@ -1,10 +1,15 @@
-Release 0.3.0 ():
-  * Better "last call" lookups (Homer White).
+Release 0.4.0:
+  * R packaging improvements (Drew).
+  * Compiled code fixes from static analyzer (Drew).
+  * Refactored main did_you_mean() method (Drew).
+
+Release 0.3.0:
+  * Better "last call" lookups (Homer).
   * Added checks for non-exported objects and non-loaded packages (Homer White).
 
-Release 0.2.0 (2014-11-15):
-  * Added localization support.
-  * Slight performance improvements in C code.
+Release 0.2.0:
+  * Added localization support. (Drew).
+  * Slight performance improvements in C code (Drew).
 
-Release 0.1.0 (2014-10-31):
+Release 0.1.0:
   * Initial release.
