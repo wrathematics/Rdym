@@ -2,8 +2,16 @@
 {
   if (interactive())
     options(error=stop_dym)
-  else
-    warning("The Rdym package can only be used interactively.", call.=FALSE, immediate.=TRUE)
+  
+  invisible()
+}
+
+
+
+.onAttach <- function(...)
+{
+  if (!interactive())
+    packageStartupMessage("NOTE:  The Rdym package can only be used interactively.")
   
   invisible()
 }
