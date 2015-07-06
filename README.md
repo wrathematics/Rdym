@@ -1,5 +1,12 @@
 # Rdym
 
+* **Version:** 0.3.1
+* **Status:** [![Build Status](https://travis-ci.org/wrathematics/Rdym.png)](https://travis-ci.org/wrathematics/Rdym) 
+* **License:** [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-orange.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+* **License:** [![License](http://img.shields.io/badge/license-BSD%202--Clause-orange.svg?style=flat)](http://opensource.org/licenses/BSD-2-Clause)
+* **Authors:** Drew Schmidt and Homer White
+
+
 Most search engines have a "did you mean?" feature, where suggestions are 
 given in the presence of likely typos.  And while search engines use 
 sophisticated NLP methods on their vast amounts of user-generated data to 
@@ -61,6 +68,7 @@ shapiro.test(rnorm(20))
 ```
 
 
+
 ## How it works
 
 When R detects that a function or object listed in the user's input is not 
@@ -90,42 +98,6 @@ suggester.
 You can install directly from GitHub via the devtools package:
 
 ```r
-library(devtools)
-install_github("wrathematics/Rdym")
-```
-
-
-
-## Software license and disclaimer
-
-This software is licensed under the permissive 2-clause BSD license.
-You can find a quick summary of the license here:
-
-https://tldrlegal.com/license/bsd-2-clause-license-%28freebsd%29
-
-The full terms of the license follows:
-
-```
-Copyright (C) 2014 Drew Schmidt and Homer White. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, 
-    this list of conditions and the following disclaimer.
-  * Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+devtools::install_github("wrathematics/Rdym")
 ```
 

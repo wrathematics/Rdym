@@ -23,7 +23,7 @@ get_langrow <- function(lang)
 check_lang <- function(lang)
 {
   if (length(get_langrow(lang=lang)) == 0)
-    stop("Language is not supported in Rdym at this time.  If you have localization support in R, please file an issue with Rdym.")
+    stop("Language is not supported in Rdym at this time.  If you have localization support in R, please file an issue with Rdym at https://github.com/wrathematics/Rdym/issues")
   
   return(invisible())
 }

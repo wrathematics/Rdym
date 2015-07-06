@@ -1,7 +1,7 @@
 Package: Rdym
 License: BSD 2-clause License + file LICENSE
-Version: 0.3.0
-Title: A "did you mean?" utilitiy for R.
+Version: 0.4.0
+Title: A "did you mean?" utilitiy for R
 Description: Most search engines have a "did you mean?" feature, where
     suggestions are given in the presence of likely typos.  The Rdym package
     somewhat replicates this functionality with ancient spellchecker techniques.
@@ -14,8 +14,11 @@ Description: Most search engines have a "did you mean?" feature, where
 ByteCompile: yes
 NeedsCompilation: yes
 Depends:
-    R (>= 2.14.0)
+    R (>= 3.0.0)
+Imports: utils
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"),
     email = "wrathematics@gmail.com"), person("Homer", "White",
     role="aut", email="hwhite0@georgetowncollege.edu"))
 Maintainer: Drew Schmidt <wrathematics@gmail.com>
+URL: https://github.com/wrathematics/Rdym
+BugReports: https://github.com/wrathematics/Rdym/issues
