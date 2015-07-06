@@ -2,3 +2,6 @@ raw/
 ^.*\.Rproj$
 ^\.Rproj\.user$
 scratch.R
+
+^\.travis\.yml$
+
