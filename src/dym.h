@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 
+#define MAX(a,b) (a<b?b:a)
 #define MIN(a,b) (a<b?a:b)
 #define MIN3(a,b,c) MIN(MIN(a,b),MIN(b,c))
 

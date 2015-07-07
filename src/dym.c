@@ -37,7 +37,7 @@ int levenshtein_dist_noalloc(const char *s, const char *t, ldint_t *v0, ldint_t 
   const size_t tlen = strlen(t);
   const size_t vlen = tlen + 1;
   
-  if (strncmp(s, t, slen) == 0) return 0;
+  if (strncmp(s, t, MAX(slen,tlen)) == 0) return 0;
   if (slen == 0) return tlen;
   if (tlen == 0) return slen;
   
