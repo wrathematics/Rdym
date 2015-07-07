@@ -2,6 +2,15 @@
 #' 
 #' Enable "did you mean?" error checking.
 #' 
+#' @examples
+#' \dontrun{
+#' RdymEnable()
+#' nonsense # or something else that doesn't exist and causes an error
+#' 
+#' RdymDisable()
+#' }
+#' 
+#' @rdname enable
 #' @export
 RdymEnable <- function()
 {
@@ -16,6 +25,7 @@ RdymEnable <- function()
 #' 
 #' Disable "did you mean?" error checking.
 #' 
+#' @rdname enable
 #' @export
 RdymDisable <- function()
 {
