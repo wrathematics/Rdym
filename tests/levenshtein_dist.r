@@ -1,6 +1,9 @@
+ld <- function(a, b) Rdym:::levenshtein_dist(a, b)
+
+
 test <- function(word1, word2)
 {
-  tmp <- function(word1, word2) Rdym:::levenshtein_dist(word1, word2) == adist(word1, word2)[1,1]
+  tmp <- function(word1, word2) ld(word1, word2) == adist(word1, word2)[1,1]
   t1 <- tmp(word1, word2)
   t2 <- tmp(word2, word1)
   t3 <- tmp(word1, word1)
@@ -24,3 +27,9 @@ test("gumbo", "gambol")
 test("shave", "brave")
 test("abcdef", "g")
 
+
+
+a <- "rm"
+b <- "rmorm"
+stopifnot(ld(a, b) == 3)
+stopifnot(ld(b, a) == 3)
