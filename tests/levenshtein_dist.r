@@ -1,5 +1,3 @@
-library(Rdym)
-
 test <- function(word1, word2)
 {
   tmp <- function(word1, word2) Rdym:::levenshtein_dist(word1, word2) == adist(word1, word2)[1,1]
@@ -17,7 +15,7 @@ test <- function(word1, word2)
       stop("reflexivity fails")
   }
   else
-    TRUE
+    invisible(TRUE)
 }
 
 
