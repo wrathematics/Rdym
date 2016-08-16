@@ -6,26 +6,39 @@
 * **Authors:** Drew Schmidt and Homer White
 
 
-Most search engines have a "did you mean?" feature, where suggestions are 
-given in the presence of likely typos.  And while search engines use 
-sophisticated NLP methods on their vast amounts of user-generated data to 
-create accurate suggestions, it turns out that you can get by with
-some ancient spellchecker techniques.
+Most search engines have a "did you mean?" feature, where suggestions are given in the presence of likely typos.  And while search engines use sophisticated NLP methods on their vast amounts of user-generated data to create accurate suggestions, it turns out that you can get by with some ancient spellchecker techniques.
+
+
+
+## Installation
+
+<!-- To install the R package, run:
+
+```r
+install.package("Rdym")
+``` -->
+
+The development version is maintained on GitHub, and can easily be installed by any of the packages that offer installations from GitHub:
+
+```r
+### Pick your preference
+devtools::install_github("wrathematics/Rdym")
+ghit::install_github("wrathematics/Rdym")
+remotes::install_github("wrathematics/Rdym")
+```
 
 
 
 ## Example
 
-Usage of the package is completely passive, beyond loading it with the usual 
-`library(Rdym)` call.  Say for example you run:
+Usage of the package is completely passive, beyond loading it with the usual `library(Rdym)` call.  Say for example you run:
 
 ```r
 shapro.test(x=rnorm(20))
 # Error: object 'shapro.test' not found
 ```
 
-Note the missing "i" in what should be `shapiro.test()`.  With Rdym loaded, 
-you can get a "did you mean?" suggestion along with the error:
+Note the missing "i" in what should be `shapiro.test()`.  With Rdym loaded, you can get a "did you mean?" suggestion along with the error:
 
 ```r
 library(Rdym)
@@ -37,11 +50,9 @@ shapro.test(x=rnorm(20))
 # shapiro.test(x=rnorm(20))
 ```
 
-If the spellchecker guessed correctly, then you should be able to just 
-copy/paste the suggestion after the "Did you mean" line into R.
+If the spellchecker guessed correctly, then you should be able to just copy/paste the suggestion after the "Did you mean" line into R.
 
-Suggestions are given as errors are discovered by the R interpreter.  
-For example:
+Suggestions are given as errors are discovered by the R interpreter.  For example:
 
 ```r
 library(Rdym)
@@ -84,25 +95,11 @@ nonsense
 
 ## How it works
 
-When R detects that a function or object listed in the user's input is not 
-found, the package finds the minimum 
-[Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) 
-between the "unfound" token and all symbols in the user's global environment 
-plus all loaded namespaces.  The word with minimum Levenshtein distance (in 
-the event of ties, the first such detected) is then suggested as an 
-alternative to the missing symbol.
+When R detects that a function or object listed in the user's input is not found, the package finds the minimum [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) between the "unfound" token and all symbols in the user's global environment plus all loaded namespaces.  The word with minimum Levenshtein distance (in the event of ties, the first such detected) is then suggested as an alternative to the missing symbol.
 
-Fairly efficient 
-[C code](https://github.com/wrathematics/Rdym/tree/master/src) 
-is used to compute the Levenshtein distances.  The "error interception" is 
-just using R's `options()` to set a function to run post error (as seen 
-[here](https://github.com/wrathematics/Rdym/blob/master/R/zzz.r)).  The 
-package won't work with batch mode R, so you have to use it in an 
-interactive R session.
+Fairly efficient [C code](https://github.com/wrathematics/Rdym/tree/master/src) is used to compute the Levenshtein distances.  The "error interception" is just using R's `options()` to set a function to run post error (as seen [here](https://github.com/wrathematics/Rdym/blob/master/R/zzz.r)).  The package won't work with batch mode R, so you have to use it in an interactive R session.
 
-Also keep in mind this is basically just a toy.  You shouldn't think of 
-this as being in the same class of capabilities as a search engine's 
-suggester.
+Also keep in mind this is basically just a toy.  You shouldn't think of this as being in the same class of capabilities as a search engine's suggester.
 
 
 
@@ -120,31 +117,11 @@ rmorm(10)
 # rnorm(10) 
 ```
 
-If your natural language is supported by R but does not work
-properly with Rdym, please
-[file a report](https://github.com/wrathematics/Rdym/issues).
-In your report, please include how you are interfacing to R (e.g.,
-RStudio, the terminal, R.app, ...) and the output of:
+If your natural language is supported by R but does not work properly with Rdym, please [file a report](https://github.com/wrathematics/Rdym/issues). In your report, please include how you are interfacing to R (e.g., RStudio, the terminal, R.app, ...) and the output of: 
 
 ```r
 Sys.getenv("LANGUAGE")
 ```
 
 
-All of the "did you mean?" localizations (found
-[here](https://github.com/wrathematics/Rdym/blob/master/R/lang_lookup.r))
-were probably generated by Google translate, and may not make any
-sense to a native speaker.  If you have suggestions for improvement,
-please consider submitting a pull request or
-[opening an issue](https://github.com/wrathematics/Rdym/issues).
-
-
-
-## Installation
-
-You can install directly from GitHub via the devtools package:
-
-```r
-devtools::install_github("wrathematics/Rdym")
-```
-
+All of the "did you mean?" localizations (found [here](https://github.com/wrathematics/Rdym/blob/master/R/lang_lookup.r)) were probably generated by Google translate, and may not make any sense to a native speaker.  If you have suggestions for improvement, please consider submitting a pull request or [opening an issue](https://github.com/wrathematics/Rdym/issues).
