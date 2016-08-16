@@ -1,5 +1,3 @@
-PKG_CFLAGS = -w
-
 OBJECTS = dym.o wrappers.o
 
 
